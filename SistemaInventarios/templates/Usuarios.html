@@ -77,25 +77,24 @@
             <div class="u-border-2 u-border-white u-container-style u-expanded-width u-group u-shape-rectangle u-group-2">
               <div class="u-container-layout u-container-layout-2">
                 <div class="u-form u-form-1">
-                  <form action="/buscarUsuarios" method="POST" class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form" style="padding: 10px;">
+                  <form action="/ValidarBusquedaUser" method="POST" class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form" style="padding: 10px;" redirect="true">
                     <div class="u-form-group u-form-partition-factor-2 u-form-select u-form-group-1">
                       <label for="select-82ce" class="u-label">Buscar Por</label>
                       <div class="u-form-select-wrapper">
-                        <select id="select-82ce" name="tipoBusqueda" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white u-input-1">
-                          <option value="Descripcion">Descripcion</option>
-                          <option value="Identificador">Identificador</option>
+                        <select id="select-82ce" name="select" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white u-input-1">
+                          <option value="usuario">Usuario</option>
                           <option value="Perfil">Perfil</option>
-                          <option value="Todo">Todo</option>
+                          <option value="Estado">Estado</option>
                         </select>
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1" class="u-caret"><path fill="currentColor" d="M4 8L0 4h8z"></path></svg>
                       </div>
                     </div>
                     <div class="u-form-group u-form-partition-factor-2 u-form-group-2">
                       <label for="text-6982" class="u-form-control-hidden u-label"></label>
-                      <input type="text" placeholder="Texto A Buscar" id="text-6982" name="textoBuscar" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white u-input-2">
+                      <input type="text" placeholder="Texto A Buscar" id="text-6982" name="text" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white u-input-2">
                     </div>
                     <div class="u-align-right u-form-group u-form-submit">
-                      <a href="#" class="u-btn u-btn-round u-btn-submit u-button-style u-radius-50 u-btn-1">Buscar</a>
+                      <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1">Enviar</a>
                       <input type="submit" value="submit" class="u-form-control-hidden">
                     </div>
                     <div class="u-form-send-message u-form-send-success"> Gracias! Tu mensaje ha sido enviado. </div>
@@ -110,100 +109,47 @@
                     <div class="u-container-style u-grey-15 u-group u-group-4">
                       <div class="u-container-layout u-container-layout-4">
                         <div class="u-align-center u-table u-table-responsive u-table-1">
+                          <p class="u-align-center u-text u-text-3"><em>
+                            {% with messages = get_flashed_messages() %}
+                                    
+                                    <div class=flashes><p style="color:#FF0000">
+                                        {% for message in messages %}
+                                            {{ message }}
+                                        {% endfor %}
+                                      </p></div>
+                                    
+                                  {% endwith %}
+                
+                                  </em></p>
                           <table class="u-table-entity">
                             <colgroup>
-                              <col width="21.25%">
-                              <col width="21.25%">
-                              <col width="21.25%">
-                              <col width="21.25%">
-                              <col width="15.01%">
-                            </colgroup>
-                            <tbody class="u-table-body">
+                              <tbody class="u-table-body">
                               <tr style="height: 46px;">
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell u-table-cell-1">Usuario</td>
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell u-table-cell-2">Nombre</td>
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell u-table-cell-3">Perfil</td>
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell u-table-cell-4">Estado</td>
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell u-table-cell-5">Acciones</td>
+                                <!--JMSS-->
+                                {% for header in headings %}
+                                  <th class="u-align-center u-border-1 u-border-grey-30 u-table-cell u-table-cellALL">{{ header }}</th>
+                                {% endfor %}
                               </tr>
+                              {% for row in data %}
                               <tr style="height: 65px;">
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">rmillan</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Ricardo Millan</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Administrador</td>
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell">Activo</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell"></td>
-                              </tr>
-                              <tr style="height: 65px;">
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">yperez</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Yolima Perez</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Usuario Final</td>
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell">Activo</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell"></td>
-                              </tr>
-                              <tr style="height: 65px;">
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">jserge</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Jose Serge</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Super Administrador</td>
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell">Activo</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell"></td>
-                              </tr>
-                              <tr style="height: 65px;">
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">crojas</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Camila Rojas</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Administrador</td>
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell">Activo</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell"></td>
-                              </tr>
-                              <tr style="height: 65px;">
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">jmunoz</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Jorge Muñoz</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell">Usuario Final</td>
-                                <td class="u-align-center u-border-1 u-border-grey-30 u-table-cell">Activo</td>
-                                <td class="u-border-1 u-border-grey-30 u-table-cell"></td>
-                              </tr>
+                                  
+                                         {%for cell in row %}
+                                         <td align="center" class="u-border-1 u-border-grey-30 u-table-cell">{{ cell }}</td>
+                                    
+                                         {% endfor %}
+                                    <td class="u-border-1 u-border-grey-30 u-table-cell">
+                                      <div align="center">
+                                  <span data-href="#sec-df98" class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black btn-editar"></span>&nbsp;&nbsp;
+                                        <span data-href="#sec-6d4f" class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black btn-borrar"></span>
+                                  
+                                  </div></td>
+                                </tr>
+                                  {% endfor %}
+                                  <!--JMSS-->
+                                </tbody>
                             </tbody>
                           </table>
-                        </div><span class="u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black u-icon-1" data-href="#sec-df98"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 -1 401.52289 401" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-711f"></use></svg><svg class="u-svg-content" viewBox="0 -1 401.52289 401" id="svg-711f"><path d="m370.589844 250.972656c-5.523438 0-10 4.476563-10 10v88.789063c-.019532 16.5625-13.4375 29.984375-30 30h-280.589844c-16.5625-.015625-29.980469-13.4375-30-30v-260.589844c.019531-16.558594 13.4375-29.980469 30-30h88.789062c5.523438 0 10-4.476563 10-10 0-5.519531-4.476562-10-10-10h-88.789062c-27.601562.03125-49.96875 22.398437-50 50v260.59375c.03125 27.601563 22.398438 49.96875 50 50h280.589844c27.601562-.03125 49.96875-22.398437 50-50v-88.792969c0-5.523437-4.476563-10-10-10zm0 0"></path><path d="m376.628906 13.441406c-17.574218-17.574218-46.066406-17.574218-63.640625 0l-178.40625 178.40625c-1.222656 1.222656-2.105469 2.738282-2.566406 4.402344l-23.460937 84.699219c-.964844 3.472656.015624 7.191406 2.5625 9.742187 2.550781 2.546875 6.269531 3.527344 9.742187 2.566406l84.699219-23.464843c1.664062-.460938 3.179687-1.34375 4.402344-2.566407l178.402343-178.410156c17.546875-17.585937 17.546875-46.054687 0-63.640625zm-220.257812 184.90625 146.011718-146.015625 47.089844 47.089844-146.015625 146.015625zm-9.40625 18.875 37.621094 37.625-52.039063 14.417969zm227.257812-142.546875-10.605468 10.605469-47.09375-47.09375 10.609374-10.605469c9.761719-9.761719 25.589844-9.761719 35.351563 0l11.738281 11.734375c9.746094 9.773438 9.746094 25.589844 0 35.359375zm0 0"></path></svg></span><span class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-8 u-text-black u-icon-2" data-href="#sec-6d4f"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 477.867 477.867" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-bcfc"></use></svg><svg class="u-svg-content" viewBox="0 0 477.867 477.867" x="0px" y="0px" id="svg-bcfc" style="enable-background:new 0 0 477.867 477.867;"><g><g><path d="M443.733,68.267H324.267V51.2c0-28.277-22.923-51.2-51.2-51.2H204.8c-28.277,0-51.2,22.923-51.2,51.2v17.067H34.133    c-9.426,0-17.067,7.641-17.067,17.067S24.708,102.4,34.133,102.4h18.551l32.649,359.953c0.805,8.814,8.216,15.55,17.067,15.514    h273.067c8.851,0.037,16.261-6.699,17.067-15.514L425.182,102.4h18.552c9.426,0,17.067-7.641,17.067-17.067    S453.159,68.267,443.733,68.267z M187.733,51.2c0-9.426,7.641-17.067,17.067-17.067h68.267c9.426,0,17.067,7.641,17.067,17.067    v17.067h-102.4V51.2z M359.885,443.733H117.982L87.04,102.4h83.627h220.245L359.885,443.733z"></path>
-</g>
-</g><g><g><path d="M187.738,391.392c-0.002-0.023-0.003-0.047-0.005-0.07l-17.067-238.933c-0.669-9.426-8.853-16.524-18.278-15.855    c-9.426,0.669-16.524,8.853-15.855,18.278L153.6,393.745c0.637,8.949,8.095,15.878,17.067,15.855h1.229    C181.299,408.947,188.392,400.795,187.738,391.392z"></path>
-</g>
-</g><g><g><path d="M238.933,136.533c-9.426,0-17.067,7.641-17.067,17.067v238.933c0,9.426,7.641,17.067,17.067,17.067    S256,401.959,256,392.533V153.6C256,144.174,248.359,136.533,238.933,136.533z"></path>
-</g>
-</g><g><g><path d="M325.478,136.533c-9.426-0.669-17.609,6.429-18.278,15.855l-17.067,238.933c-0.691,9.4,6.369,17.581,15.769,18.272    c0.029,0.002,0.057,0.004,0.086,0.006h1.212c8.972,0.023,16.43-6.906,17.067-15.855l17.067-238.933    C342.003,145.386,334.904,137.203,325.478,136.533z"></path>
-</g>
-</g></svg></span><span class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black u-icon-3" data-href="#sec-df98"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 -1 401.52289 401" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-2298"></use></svg><svg class="u-svg-content" viewBox="0 -1 401.52289 401" id="svg-2298"><path d="m370.589844 250.972656c-5.523438 0-10 4.476563-10 10v88.789063c-.019532 16.5625-13.4375 29.984375-30 30h-280.589844c-16.5625-.015625-29.980469-13.4375-30-30v-260.589844c.019531-16.558594 13.4375-29.980469 30-30h88.789062c5.523438 0 10-4.476563 10-10 0-5.519531-4.476562-10-10-10h-88.789062c-27.601562.03125-49.96875 22.398437-50 50v260.59375c.03125 27.601563 22.398438 49.96875 50 50h280.589844c27.601562-.03125 49.96875-22.398437 50-50v-88.792969c0-5.523437-4.476563-10-10-10zm0 0"></path><path d="m376.628906 13.441406c-17.574218-17.574218-46.066406-17.574218-63.640625 0l-178.40625 178.40625c-1.222656 1.222656-2.105469 2.738282-2.566406 4.402344l-23.460937 84.699219c-.964844 3.472656.015624 7.191406 2.5625 9.742187 2.550781 2.546875 6.269531 3.527344 9.742187 2.566406l84.699219-23.464843c1.664062-.460938 3.179687-1.34375 4.402344-2.566407l178.402343-178.410156c17.546875-17.585937 17.546875-46.054687 0-63.640625zm-220.257812 184.90625 146.011718-146.015625 47.089844 47.089844-146.015625 146.015625zm-9.40625 18.875 37.621094 37.625-52.039063 14.417969zm227.257812-142.546875-10.605468 10.605469-47.09375-47.09375 10.609374-10.605469c9.761719-9.761719 25.589844-9.761719 35.351563 0l11.738281 11.734375c9.746094 9.773438 9.746094 25.589844 0 35.359375zm0 0"></path></svg></span><span class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-8 u-text-black u-icon-4" data-href="#sec-6d4f"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 477.867 477.867" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-4cd6"></use></svg><svg class="u-svg-content" viewBox="0 0 477.867 477.867" x="0px" y="0px" id="svg-4cd6" style="enable-background:new 0 0 477.867 477.867;"><g><g><path d="M443.733,68.267H324.267V51.2c0-28.277-22.923-51.2-51.2-51.2H204.8c-28.277,0-51.2,22.923-51.2,51.2v17.067H34.133    c-9.426,0-17.067,7.641-17.067,17.067S24.708,102.4,34.133,102.4h18.551l32.649,359.953c0.805,8.814,8.216,15.55,17.067,15.514    h273.067c8.851,0.037,16.261-6.699,17.067-15.514L425.182,102.4h18.552c9.426,0,17.067-7.641,17.067-17.067    S453.159,68.267,443.733,68.267z M187.733,51.2c0-9.426,7.641-17.067,17.067-17.067h68.267c9.426,0,17.067,7.641,17.067,17.067    v17.067h-102.4V51.2z M359.885,443.733H117.982L87.04,102.4h83.627h220.245L359.885,443.733z"></path>
-</g>
-</g><g><g><path d="M187.738,391.392c-0.002-0.023-0.003-0.047-0.005-0.07l-17.067-238.933c-0.669-9.426-8.853-16.524-18.278-15.855    c-9.426,0.669-16.524,8.853-15.855,18.278L153.6,393.745c0.637,8.949,8.095,15.878,17.067,15.855h1.229    C181.299,408.947,188.392,400.795,187.738,391.392z"></path>
-</g>
-</g><g><g><path d="M238.933,136.533c-9.426,0-17.067,7.641-17.067,17.067v238.933c0,9.426,7.641,17.067,17.067,17.067    S256,401.959,256,392.533V153.6C256,144.174,248.359,136.533,238.933,136.533z"></path>
-</g>
-</g><g><g><path d="M325.478,136.533c-9.426-0.669-17.609,6.429-18.278,15.855l-17.067,238.933c-0.691,9.4,6.369,17.581,15.769,18.272    c0.029,0.002,0.057,0.004,0.086,0.006h1.212c8.972,0.023,16.43-6.906,17.067-15.855l17.067-238.933    C342.003,145.386,334.904,137.203,325.478,136.533z"></path>
-</g>
-</g></svg></span><span class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black u-icon-5" data-href="#sec-df98"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 -1 401.52289 401" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-0e62"></use></svg><svg class="u-svg-content" viewBox="0 -1 401.52289 401" id="svg-0e62"><path d="m370.589844 250.972656c-5.523438 0-10 4.476563-10 10v88.789063c-.019532 16.5625-13.4375 29.984375-30 30h-280.589844c-16.5625-.015625-29.980469-13.4375-30-30v-260.589844c.019531-16.558594 13.4375-29.980469 30-30h88.789062c5.523438 0 10-4.476563 10-10 0-5.519531-4.476562-10-10-10h-88.789062c-27.601562.03125-49.96875 22.398437-50 50v260.59375c.03125 27.601563 22.398438 49.96875 50 50h280.589844c27.601562-.03125 49.96875-22.398437 50-50v-88.792969c0-5.523437-4.476563-10-10-10zm0 0"></path><path d="m376.628906 13.441406c-17.574218-17.574218-46.066406-17.574218-63.640625 0l-178.40625 178.40625c-1.222656 1.222656-2.105469 2.738282-2.566406 4.402344l-23.460937 84.699219c-.964844 3.472656.015624 7.191406 2.5625 9.742187 2.550781 2.546875 6.269531 3.527344 9.742187 2.566406l84.699219-23.464843c1.664062-.460938 3.179687-1.34375 4.402344-2.566407l178.402343-178.410156c17.546875-17.585937 17.546875-46.054687 0-63.640625zm-220.257812 184.90625 146.011718-146.015625 47.089844 47.089844-146.015625 146.015625zm-9.40625 18.875 37.621094 37.625-52.039063 14.417969zm227.257812-142.546875-10.605468 10.605469-47.09375-47.09375 10.609374-10.605469c9.761719-9.761719 25.589844-9.761719 35.351563 0l11.738281 11.734375c9.746094 9.773438 9.746094 25.589844 0 35.359375zm0 0"></path></svg></span><span class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-8 u-text-black u-icon-6" data-href="#sec-6d4f"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 477.867 477.867" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-69f1"></use></svg><svg class="u-svg-content" viewBox="0 0 477.867 477.867" x="0px" y="0px" id="svg-69f1" style="enable-background:new 0 0 477.867 477.867;"><g><g><path d="M443.733,68.267H324.267V51.2c0-28.277-22.923-51.2-51.2-51.2H204.8c-28.277,0-51.2,22.923-51.2,51.2v17.067H34.133    c-9.426,0-17.067,7.641-17.067,17.067S24.708,102.4,34.133,102.4h18.551l32.649,359.953c0.805,8.814,8.216,15.55,17.067,15.514    h273.067c8.851,0.037,16.261-6.699,17.067-15.514L425.182,102.4h18.552c9.426,0,17.067-7.641,17.067-17.067    S453.159,68.267,443.733,68.267z M187.733,51.2c0-9.426,7.641-17.067,17.067-17.067h68.267c9.426,0,17.067,7.641,17.067,17.067    v17.067h-102.4V51.2z M359.885,443.733H117.982L87.04,102.4h83.627h220.245L359.885,443.733z"></path>
-</g>
-</g><g><g><path d="M187.738,391.392c-0.002-0.023-0.003-0.047-0.005-0.07l-17.067-238.933c-0.669-9.426-8.853-16.524-18.278-15.855    c-9.426,0.669-16.524,8.853-15.855,18.278L153.6,393.745c0.637,8.949,8.095,15.878,17.067,15.855h1.229    C181.299,408.947,188.392,400.795,187.738,391.392z"></path>
-</g>
-</g><g><g><path d="M238.933,136.533c-9.426,0-17.067,7.641-17.067,17.067v238.933c0,9.426,7.641,17.067,17.067,17.067    S256,401.959,256,392.533V153.6C256,144.174,248.359,136.533,238.933,136.533z"></path>
-</g>
-</g><g><g><path d="M325.478,136.533c-9.426-0.669-17.609,6.429-18.278,15.855l-17.067,238.933c-0.691,9.4,6.369,17.581,15.769,18.272    c0.029,0.002,0.057,0.004,0.086,0.006h1.212c8.972,0.023,16.43-6.906,17.067-15.855l17.067-238.933    C342.003,145.386,334.904,137.203,325.478,136.533z"></path>
-</g>
-</g></svg></span><span class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black u-icon-7" data-href="#sec-df98"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 -1 401.52289 401" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-f57d"></use></svg><svg class="u-svg-content" viewBox="0 -1 401.52289 401" id="svg-f57d"><path d="m370.589844 250.972656c-5.523438 0-10 4.476563-10 10v88.789063c-.019532 16.5625-13.4375 29.984375-30 30h-280.589844c-16.5625-.015625-29.980469-13.4375-30-30v-260.589844c.019531-16.558594 13.4375-29.980469 30-30h88.789062c5.523438 0 10-4.476563 10-10 0-5.519531-4.476562-10-10-10h-88.789062c-27.601562.03125-49.96875 22.398437-50 50v260.59375c.03125 27.601563 22.398438 49.96875 50 50h280.589844c27.601562-.03125 49.96875-22.398437 50-50v-88.792969c0-5.523437-4.476563-10-10-10zm0 0"></path><path d="m376.628906 13.441406c-17.574218-17.574218-46.066406-17.574218-63.640625 0l-178.40625 178.40625c-1.222656 1.222656-2.105469 2.738282-2.566406 4.402344l-23.460937 84.699219c-.964844 3.472656.015624 7.191406 2.5625 9.742187 2.550781 2.546875 6.269531 3.527344 9.742187 2.566406l84.699219-23.464843c1.664062-.460938 3.179687-1.34375 4.402344-2.566407l178.402343-178.410156c17.546875-17.585937 17.546875-46.054687 0-63.640625zm-220.257812 184.90625 146.011718-146.015625 47.089844 47.089844-146.015625 146.015625zm-9.40625 18.875 37.621094 37.625-52.039063 14.417969zm227.257812-142.546875-10.605468 10.605469-47.09375-47.09375 10.609374-10.605469c9.761719-9.761719 25.589844-9.761719 35.351563 0l11.738281 11.734375c9.746094 9.773438 9.746094 25.589844 0 35.359375zm0 0"></path></svg></span><span class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-8 u-text-black u-icon-8" data-href="#sec-6d4f"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 477.867 477.867" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-9139"></use></svg><svg class="u-svg-content" viewBox="0 0 477.867 477.867" x="0px" y="0px" id="svg-9139" style="enable-background:new 0 0 477.867 477.867;"><g><g><path d="M443.733,68.267H324.267V51.2c0-28.277-22.923-51.2-51.2-51.2H204.8c-28.277,0-51.2,22.923-51.2,51.2v17.067H34.133    c-9.426,0-17.067,7.641-17.067,17.067S24.708,102.4,34.133,102.4h18.551l32.649,359.953c0.805,8.814,8.216,15.55,17.067,15.514    h273.067c8.851,0.037,16.261-6.699,17.067-15.514L425.182,102.4h18.552c9.426,0,17.067-7.641,17.067-17.067    S453.159,68.267,443.733,68.267z M187.733,51.2c0-9.426,7.641-17.067,17.067-17.067h68.267c9.426,0,17.067,7.641,17.067,17.067    v17.067h-102.4V51.2z M359.885,443.733H117.982L87.04,102.4h83.627h220.245L359.885,443.733z"></path>
-</g>
-</g><g><g><path d="M187.738,391.392c-0.002-0.023-0.003-0.047-0.005-0.07l-17.067-238.933c-0.669-9.426-8.853-16.524-18.278-15.855    c-9.426,0.669-16.524,8.853-15.855,18.278L153.6,393.745c0.637,8.949,8.095,15.878,17.067,15.855h1.229    C181.299,408.947,188.392,400.795,187.738,391.392z"></path>
-</g>
-</g><g><g><path d="M238.933,136.533c-9.426,0-17.067,7.641-17.067,17.067v238.933c0,9.426,7.641,17.067,17.067,17.067    S256,401.959,256,392.533V153.6C256,144.174,248.359,136.533,238.933,136.533z"></path>
-</g>
-</g><g><g><path d="M325.478,136.533c-9.426-0.669-17.609,6.429-18.278,15.855l-17.067,238.933c-0.691,9.4,6.369,17.581,15.769,18.272    c0.029,0.002,0.057,0.004,0.086,0.006h1.212c8.972,0.023,16.43-6.906,17.067-15.855l17.067-238.933    C342.003,145.386,334.904,137.203,325.478,136.533z"></path>
-</g>
-</g></svg></span><span class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black u-icon-9" data-href="#sec-df98"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 -1 401.52289 401" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-3c3d"></use></svg><svg class="u-svg-content" viewBox="0 -1 401.52289 401" id="svg-3c3d"><path d="m370.589844 250.972656c-5.523438 0-10 4.476563-10 10v88.789063c-.019532 16.5625-13.4375 29.984375-30 30h-280.589844c-16.5625-.015625-29.980469-13.4375-30-30v-260.589844c.019531-16.558594 13.4375-29.980469 30-30h88.789062c5.523438 0 10-4.476563 10-10 0-5.519531-4.476562-10-10-10h-88.789062c-27.601562.03125-49.96875 22.398437-50 50v260.59375c.03125 27.601563 22.398438 49.96875 50 50h280.589844c27.601562-.03125 49.96875-22.398437 50-50v-88.792969c0-5.523437-4.476563-10-10-10zm0 0"></path><path d="m376.628906 13.441406c-17.574218-17.574218-46.066406-17.574218-63.640625 0l-178.40625 178.40625c-1.222656 1.222656-2.105469 2.738282-2.566406 4.402344l-23.460937 84.699219c-.964844 3.472656.015624 7.191406 2.5625 9.742187 2.550781 2.546875 6.269531 3.527344 9.742187 2.566406l84.699219-23.464843c1.664062-.460938 3.179687-1.34375 4.402344-2.566407l178.402343-178.410156c17.546875-17.585937 17.546875-46.054687 0-63.640625zm-220.257812 184.90625 146.011718-146.015625 47.089844 47.089844-146.015625 146.015625zm-9.40625 18.875 37.621094 37.625-52.039063 14.417969zm227.257812-142.546875-10.605468 10.605469-47.09375-47.09375 10.609374-10.605469c9.761719-9.761719 25.589844-9.761719 35.351563 0l11.738281 11.734375c9.746094 9.773438 9.746094 25.589844 0 35.359375zm0 0"></path></svg></span><span class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-8 u-text-black u-icon-10" data-href="#sec-6d4f"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 477.867 477.867" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-4130"></use></svg><svg class="u-svg-content" viewBox="0 0 477.867 477.867" x="0px" y="0px" id="svg-4130" style="enable-background:new 0 0 477.867 477.867;"><g><g><path d="M443.733,68.267H324.267V51.2c0-28.277-22.923-51.2-51.2-51.2H204.8c-28.277,0-51.2,22.923-51.2,51.2v17.067H34.133    c-9.426,0-17.067,7.641-17.067,17.067S24.708,102.4,34.133,102.4h18.551l32.649,359.953c0.805,8.814,8.216,15.55,17.067,15.514    h273.067c8.851,0.037,16.261-6.699,17.067-15.514L425.182,102.4h18.552c9.426,0,17.067-7.641,17.067-17.067    S453.159,68.267,443.733,68.267z M187.733,51.2c0-9.426,7.641-17.067,17.067-17.067h68.267c9.426,0,17.067,7.641,17.067,17.067    v17.067h-102.4V51.2z M359.885,443.733H117.982L87.04,102.4h83.627h220.245L359.885,443.733z"></path>
-</g>
-</g><g><g><path d="M187.738,391.392c-0.002-0.023-0.003-0.047-0.005-0.07l-17.067-238.933c-0.669-9.426-8.853-16.524-18.278-15.855    c-9.426,0.669-16.524,8.853-15.855,18.278L153.6,393.745c0.637,8.949,8.095,15.878,17.067,15.855h1.229    C181.299,408.947,188.392,400.795,187.738,391.392z"></path>
-</g>
-</g><g><g><path d="M238.933,136.533c-9.426,0-17.067,7.641-17.067,17.067v238.933c0,9.426,7.641,17.067,17.067,17.067    S256,401.959,256,392.533V153.6C256,144.174,248.359,136.533,238.933,136.533z"></path>
-</g>
-</g><g><g><path d="M325.478,136.533c-9.426-0.669-17.609,6.429-18.278,15.855l-17.067,238.933c-0.691,9.4,6.369,17.581,15.769,18.272    c0.029,0.002,0.057,0.004,0.086,0.006h1.212c8.972,0.023,16.43-6.906,17.067-15.855l17.067-238.933    C342.003,145.386,334.904,137.203,325.478,136.533z"></path>
-</g>
-</g></svg></span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -346,27 +292,27 @@
         <div class="u-container-layout u-container-layout-1">
           <h3 class="u-text u-text-1">REGISTRO DE USUARIO</h3>
           <div class="u-form u-form-1">
-            <form action="#" method="POST" class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form-1" style="padding: 10px;">
+            <form action="/insertarUsuarios" method="POST" class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form-1" style="padding: 10px;" redirect="true">
               <div class="u-form-group u-form-name">
                 <label for="name-0f37" class="u-label">Cedula</label>
                 <input type="text" placeholder="Introduzca su nombre" id="name-0f37" name="cedula" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="">
               </div>
-              <div class="u-form-group">
+              <div class="u-form-group u-form-group-2">
                 <label for="email-0f37" class="u-label">Nombre Completo</label>
                 <input type="text" placeholder="Nombre Completo" id="email-0f37" name="nombre" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="required">
               </div>
               <div class="u-form-group u-form-group-3">
-                <label for="text-107c" class="u-label">Direccion</label>
-                <input type="text" placeholder="Dirección" id="text-107c" name="direccion" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
+                <label for="text-67ca" class="u-label">Dirección</label>
+                <input type="text" placeholder="Dirección" id="text-67ca" name="direccion" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
               </div>
-              <div class="u-form-email u-form-group u-form-group-4">
-                <label for="text-7a82" class="u-label">correo electronico</label>
-                <input type="email" placeholder="email" id="text-7a82" name="mail" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
+              <div class="u-form-email u-form-group u-form-group-5">
+                <label for="email-d318" class="u-label">Correo Electrónico</label>
+                <input type="email" placeholder="Introduzca una dirección de correo electrónico válida" id="email-d318" name="mail" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="">
               </div>
               <div class="u-form-group u-form-select u-form-group-5">
-                <label for="select-b783" class="u-label">Perfil</label>
+                <label for="text-7a82" class="u-label">Perfil</label>
                 <div class="u-form-select-wrapper">
-                  <select id="select-b783" name="perfil" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
+                  <select id="stext-7a82" name="perfil" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
                     <option value="Usuario Final">Usuario Final</option>
                     <option value="Administrador">Administrador</option>
                     <option value="SuperAdministrador">SuperAdministrador</option>
@@ -375,9 +321,9 @@
                 </div>
               </div>
               <div class="u-form-group u-form-select u-form-group-6">
-                <label for="select-49e4" class="u-label">Estado</label>
+                <label for="select-f7cf" class="u-label">Estado</label>
                 <div class="u-form-select-wrapper">
-                  <select id="select-49e4" name="estado" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
+                  <select id="select-f7cf" name="estado" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
                     <option value="Activo">Activo</option>
                     <option value="Inactivo">Inactivo</option>
                   </select>
@@ -392,17 +338,17 @@
                 <input type="checkbox" id="checkbox-1c85" name="CambioPassSesion" value="On">
                 <label for="checkbox-1c85" class="u-label">Usuario debe cambiar la contraseña al siguiente inicio de sesión</label>
               </div>
-              <div class="u-align-right u-form-group u-form-submit u-form-group-9">
-                <a href="#" class="u-border-active-palette-2-dark-1 u-border-black u-border-hover-palette-2-base u-border-none u-btn u-btn-round u-btn-submit u-button-style u-palette-1-base u-radius-50 u-text-body-color u-text-hover-palette-2-base u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">GUARDAR</a>
-                <input type="text" value="submit" class="u-form-control-hidden">
+              <div class="u-align-right u-form-group u-form-submit">
+                <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1">Enviar</a>
+                <input type="submit" value="submit" class="u-form-control-hidden">
               </div>
               <div class="u-form-send-message u-form-send-success"> Gracias! Tu mensaje ha sido enviado. </div>
-              <div class="u-form-send-error u-form-send-message"> No se puede enviar su mensaje. Por favor, corrija los errores y vuelva a intentarlo. </div>
+              <div class="u-form-send-error u-form-send-message">No se puede enviar su mensaje. Por favor, corrija los errores y vuelva a intentarlo.</div>
               <input type="hidden" value="" name="recaptchaResponse">
             </form>
           </div>
           <a href="/usuarios" data-page-id="88368744" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-2">CANCELAR</a>
-        </div><button class="u-dialog-close-button u-icon u-text-grey-40 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-e0b4"></use></svg><svg class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-e0b4"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
+        </div><button class="u-dialog-close-button u-icon u-text-grey-40 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-e2c9"></use></svg><svg class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-e2c9"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
       </div>
     </section><style>.u-section-5 {
   min-height: 962px;

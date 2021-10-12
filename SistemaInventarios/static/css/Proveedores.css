@@ -127,19 +127,37 @@
   font-weight: 700;
 }
 
-.u-section-1 .u-icon-1 {
-  width: 42px;
-  height: 42px;
-  background-image: none;
-  margin: -321px 113px 0 auto;
+.u-section-1 .u-table-cell-6 {
+  font-weight: 700;
 }
 
+.u-section-1 .u-table-cell-7 {
+  font-weight: 700;
+}
+
+/*RJMM se crea clase*/
+.u-section-1 .u-table-cellALL {
+  font-weight: 700;
+}
+
+/*RJMM SE MODIFICA*/
+.u-section-1 .u-icon-1 {
+  /*width: 60px;
+  height: 60px;*/
+  background-image: url('/static/images/ico-editar.jpg');
+  /*margin: -321px 113px 0 auto;*/
+  background-size: 100% 100%;
+}
+
+/*RJMM SE MODIFICA*/
 .u-section-1 .u-icon-2 {
   width: 40px;
   height: 40px;
-  background-image: none;
-  margin: -41px 59px 0 auto;
+  background-image: url('/static/images/ico-borrar.jpg');;
+  /*margin: -41px 59px 0 auto;*/
+  background-size: 100% 100%;
 }
+
 
 .u-section-1 .u-icon-3 {
   width: 42px;
@@ -257,6 +275,14 @@
     border-style: double;
   }
 
+  .u-section-1 .u-table-cell-6 {
+    border-style: double;
+  }
+
+  .u-section-1 .u-table-cell-7 {
+    border-style: double;
+  }
+
   .u-section-1 .u-icon-2 {
     margin-top: -40px;
   }
@@ -361,4 +387,6 @@
   .u-section-1 .u-group-5 {
     width: 340px;
   }
+
+  
 }

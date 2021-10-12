@@ -15,10 +15,10 @@ data.sort_values("Date", inplace=True)
 df = pd.read_csv('data.csv', delimiter = ';')
 #Crear una tabla dinámica
 pv = pd.pivot_table(df, index=['Name'], columns=["Status"], values=['Quantity'], aggfunc=sum, fill_value=0)
-trace1 = go.Bar(x=pv.index, y=pv[('Quantity', 'declinada')], name='Declinada')
-trace2 = go.Bar(x=pv.index, y=pv[('Quantity', 'pendiente')], name='Pendiente')
-trace3 = go.Bar(x=pv.index, y=pv[('Quantity', 'presentada')], name='Presentada')
-trace4 = go.Bar(x=pv.index, y=pv[('Quantity', 'ganada')], name='Ganada')
+trace1 = go.Bar(x=pv.index, y=pv[('Quantity', 'declinada')], name='EnProceso')
+trace2 = go.Bar(x=pv.index, y=pv[('Quantity', 'pendiente')], name='Solitado')
+trace3 = go.Bar(x=pv.index, y=pv[('Quantity', 'presentada')], name='PorEntregar')
+trace4 = go.Bar(x=pv.index, y=pv[('Quantity', 'ganada')], name='Entregado')
 
 
 external_stylesheets = [
@@ -51,6 +51,18 @@ appDash.layout = html.Div(
         html.Div(
             children=[
                 html.Div(
+                    children= dcc.Graph(
+                        id='example-graph',
+                        config={"displayModeBar": False},
+                        figure={
+                            'data': [trace1, trace2, trace3, trace4],
+                            'layout':
+                            go.Layout(title='Estado de Pedidos a los Proveedores', barmode='stack')
+                        },
+                    ),
+                    className="card",
+                ),
+                html.Div(
                     children=dcc.Graph(
                         id="price-chart",
                         config={"displayModeBar": False},
@@ -66,7 +78,7 @@ appDash.layout = html.Div(
                             ],
                             "layout": {
                                 "title": {
-                                    "text": "Precio Promedio",
+                                    "text": "Stock de Inventario",
                                     "x": 0.05,
                                     "xanchor": "left",
                                 },
@@ -102,45 +114,6 @@ appDash.layout = html.Div(
                                 "xaxis": {"fixedrange": True},
                                 "yaxis": {"fixedrange": True},
                                 "colorway": ["#E12D39"],
-                            },
-                        },
-                    ),
-                    className="card",
-                ),
-                html.Div(children='''Reporte Nacional de Ventas.'''),
-                dcc.Graph(
-                    id='example-graph',
-                    figure={
-                        'data': [trace1, trace2, trace3, trace4],
-                        'layout':
-                        go.Layout(title='Estado de orden por cliente', barmode='stack')
-                    }),
-                html.Div(
-                    children=dcc.Graph(
-                        id="price-chart2",
-                        config={"displayModeBar": False},
-                        figure={
-                            "data": [
-                                {
-                                    "x": data["Date"],
-                                    "y": data["AveragePrice"],
-                                    "type": "lines",
-                                    "hovertemplate": "$%{y:.2f}"
-                                                     "<extra></extra>",
-                                },
-                            ],
-                            "layout": {
-                                "title": {
-                                    "text": "Precio Promedio",
-                                    "x": 0.05,
-                                    "xanchor": "left",
-                                },
-                                "xaxis": {"fixedrange": True},
-                                "yaxis": {
-                                    "tickprefix": "$",
-                                    "fixedrange": True,
-                                },
-                                "colorway": ["#17B897"],
                             },
                         },
                     ),

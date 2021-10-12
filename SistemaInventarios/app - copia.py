@@ -1,10 +1,8 @@
 from flask import Flask, render_template, redirect, request, flash
-from SistemaInventarios.dashboard import appDash
 import os
 
-#app= Flask(__name__)
-appDash.secret_key= os.urandom(32)
-appDash.server.secret_key= os.urandom(32)
+app= Flask(__name__)
+app.secret_key= os.urandom(32)
 
 datosUsuarios = {
     "Yolima": "1234",
@@ -36,19 +34,17 @@ cabeceraP = ("Identificador","Nombre"," Cantidad Minima","Cantidad Disponible","
 datosProductos = [(1,"Carro Toyota Prado",2,0,"Modelo 2018, automatico","Activo"),
     (2,"Carro Hyundai Tucson",4,1,"Modelo 2021, mecanico","Activo"),(3,"Carro Mazda 5",2,1,"Modelo 2017 automatico","Activo")]
 
-
-
-@appDash.server.route('/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     return redirect("/index")
 
 
-@appDash.server.route('/index', methods=('GET', 'POST'))
+@app.route('/index', methods=('GET', 'POST'))
 def login():
     return render_template("index.html")
 
 
-@appDash.server.route('/validarLogin', methods=('GET', 'POST'))
+@app.route('/validarLogin', methods=('GET', 'POST'))
 def validarLogin():
     global usuarios
     if request.method == 'POST':
@@ -67,17 +63,17 @@ def validarLogin():
         return redirect("/index")
 
 
-@appDash.server.route('/inicio', methods=['GET'])
+@app.route('/inicio', methods=['GET'])
 def inicio():
     return render_template("Inicio.html")
 
 #USUARIOS JMSS
-@appDash.server.route('/usuarios', methods=('GET','POST'))
+@app.route('/usuarios', methods=('GET','POST'))
 def usuarios():
     return render_template("Usuarios.html")
 
 
-@appDash.server.route('/ValidarBusquedaUser', methods=('GET','POST'))
+@app.route('/ValidarBusquedaUser', methods=('GET','POST'))
 def ValidarBusquedaUser():
     if request.method == 'POST':
         seleccion = request.form['select']
@@ -148,7 +144,7 @@ def ValidarBusquedaUser():
                 return redirect("/usuarios")
 
 
-@appDash.server.route('/insertarUsuarios', methods=('GET','POST'))
+@app.route('/insertarUsuarios', methods=('GET','POST'))
 def insertarUsuarios():
     if request.method == 'POST':
         # Entra cuando el llamado es hecho por metodo POST.
@@ -177,11 +173,12 @@ def insertarUsuarios():
 
 
 #PRODUCTOS PROVEEDORES
-@appDash.server.route('/proveedores', methods=('GET','POST'))
+
+@app.route('/proveedores', methods=('GET','POST'))
 def proveedores():
     return render_template("Proveedores.html")
 
-@appDash.server.route('/buscarProveedores', methods=('GET','POST'))
+@app.route('/buscarProveedores', methods=('GET','POST'))
 def buscarproveedores():
     
     if request.method == 'POST':
@@ -327,7 +324,7 @@ def buscarproveedores():
                 return redirect("/proveedores")    
                    
 
-@appDash.server.route('/insertarProveedor', methods=('GET','POST'))
+@app.route('/insertarProveedor', methods=('GET','POST'))
 def insertarproveedor():
     if request.method == 'POST':
         # Entra cuando el llamado es hecho por metodo POST.
@@ -361,11 +358,11 @@ def insertarproveedor():
 
 #PRODUCTOS LOGICA
 
-@appDash.server.route('/productos', methods=('GET','POST'))
+@app.route('/productos', methods=('GET','POST'))
 def productos():
     return render_template("Productos.html")
 
-@appDash.server.route('/buscarProductos', methods=('GET','POST'))
+@app.route('/buscarProductos', methods=('GET','POST'))
 def buscarproductos():
 
     if request.method == 'POST':
@@ -449,7 +446,7 @@ def buscarproductos():
                 return redirect("/productos")
 
 #metodo insertar producto
-@appDash.server.route('/insertarProducto', methods=('GET','POST'))
+@app.route('/insertarProducto', methods=('GET','POST'))
 def insertarproducto():
     if request.method == 'POST':
         # Entra cuando el llamado es hecho por metodo POST.
@@ -480,10 +477,11 @@ def insertarproducto():
         return redirect("/productos") 
 
 
-@appDash.server.route('/dashboard')
-def dashboard():
-    return appDash.index()
+@app.route('/dashboard', methods=['GET'])
+def dashBoard():
+    return render_template("DashBoard.html")
 
-# if __name__=='__main__':
-#    appDash.run(debug=True)
+
+if __name__=='__main__':
+    app.run(debug=True)
 

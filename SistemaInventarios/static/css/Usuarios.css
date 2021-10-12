@@ -125,20 +125,25 @@
 .u-section-1 .u-table-cell-5 {
   font-weight: 700;
 }
+/*JMSS*/
+.u-section-1 .u-table-cellALL {
+  font-weight: 700;
+}
 
 .u-section-1 .u-icon-1 {
-  width: 42px;
-  height: 42px;
-  background-image: none;
-  color: rgb(84, 112, 219) !important;
-  margin: -315px 113px 0 auto;
+  /* width: 42px;
+  height: 42px; */
+  background-image: url('/static/images/ico-editar.jpg');
+  background-size: 100% 100%;
+  /* margin: -315px 113px 0 auto; */
 }
 
 .u-section-1 .u-icon-2 {
   width: 40px;
   height: 40px;
-  background-image: none;
-  margin: -42px 59px 0 auto;
+  background-image: url('/static/images/ico-borrar.jpg');
+  /*margin: -41px 59px 0 auto;*/
+  background-size: 100% 100%;
 }
 
 .u-section-1 .u-icon-3 {
