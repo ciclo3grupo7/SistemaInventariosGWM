@@ -8,7 +8,9 @@
 }
 
 .u-section-1 .u-group-1 {
-  width: 1090px;
+  /*JHMO*/
+  /*width: 1090px;*/
+  width: 1410px;
   min-height: 656px;
   height: auto;
   margin: 100px auto 20px;
@@ -30,7 +32,9 @@
   text-transform: uppercase;
   font-size: 0.875rem;
   letter-spacing: 1px;
-  margin: 16px 487px 0 auto;
+  /*JHMO*/
+  /* margin: 16px 487px 0 auto; */
+  margin: 16px 650px 0 auto;
 }
 
 @media (max-width: 1199px) {

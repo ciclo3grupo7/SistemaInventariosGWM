@@ -89,12 +89,7 @@
                       <label for="select-82ce" class="u-label">Buscar Por</label>
                       <div class="u-form-select-wrapper">
                         <select id="select-82ce" name="select" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white u-input-1">
-                          <option value="nit">Nit</option>
-                          <option value="nombre">Razón Social</option>
-                          <option value="direccion">Dirección</option>
-                          <option value="telefono">Telefono</option>
-                          <option value="email">Email</option>
-                          <option value="estado">Estado</option>
+                          {{opcBusqueda|safe}}
                         </select>
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1" class="u-caret"><path fill="currentColor" d="M4 8L0 4h8z"></path></svg>
                       </div>
@@ -123,7 +118,7 @@
                           <p class="u-align-center u-text u-text-3"><em>
                             {% with messages = get_flashed_messages() %}
                                     
-                                    <div class=flashes><p style="color:#FF0000">
+                                    <div class=flashes><p style="color:#000000">
                                         {% for message in messages %}
                                             {{ message }}
                                         {% endfor %}

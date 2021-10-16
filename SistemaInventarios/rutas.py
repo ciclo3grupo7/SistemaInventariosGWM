@@ -1,6 +1,21 @@
-from flask import Flask, render_template, redirect, request, flash
+from flask import Flask, render_template, redirect, request, flash, jsonify, make_response
 from SistemaInventarios.dashboard import appDash
+from SistemaInventarios import db
 import os
+
+def miFlash(mensaje):
+    flash(mensaje+". ")
+
+def opcBusquedaHTML(listBusqueda, campoSelec=""):
+    opciones = ""
+    for campo,opc in listBusqueda.items():
+        if campo == campoSelec:
+            txtSelected = "selected"
+        else:
+            txtSelected = ""
+        opciones += f'<option value="{campo}" {txtSelected}>{opc[0]}</option>'
+    # print("opciones: ", opciones)
+    return(opciones)
 
 #app= Flask(__name__)
 appDash.secret_key= os.urandom(32)
@@ -14,7 +29,7 @@ datosUsuarios = {
     "Jorge": "1234"
 }
 # Interacción de Proveedores
-cabecera = ("Nit","Razón Social","Dirección","Telefono","email","estado","acciones")
+cabeceraProv = ("Nit","Razón Social","Dirección","Telefono","email","estado","acciones")
 
 datosProveedores = [("1","Proveedor1","Call 43","2233","s@g.com","Activo"),
     ("2","Proveedor2","Call 44","564","t@s.com","Activo")]
@@ -31,12 +46,37 @@ datosUsuar = [("jserge","José Serge","Administrador","Activo"),
 datosUsuar.append(("rmillan","Ricardo Millan","SuperAdministrador","Activo"))
 
 # Interacción de Productos
-cabeceraP = ("Identificador","Nombre"," Cantidad Minima","Cantidad Disponible","Descripcion","Estado","acciones")
+cabeceraProd = ("Identificador","Nombre"," Cantidad Minima","Cantidad Disponible","Descripcion","Estado","acciones")
 
 datosProductos = [(1,"Carro Toyota Prado",2,0,"Modelo 2018, automatico","Activo"),
     (2,"Carro Hyundai Tucson",4,1,"Modelo 2021, mecanico","Activo"),(3,"Carro Mazda 5",2,1,"Modelo 2017 automatico","Activo")]
 
 
+listaBusquedaUsuarios = {
+    "usuario": ["Usuario","=="],
+    "nombre": ["Nombre","in"],
+    "tipoUsuario": ["Perfil","=="],
+    "estado": ["Estado","=="],
+}
+opcionesUsuarios = opcBusquedaHTML(listaBusquedaUsuarios)
+
+listaBusquedaProveedores = {
+    "nit": ["Nit", "=="],
+    "nombre": ["Razon Social", "in"],
+    "direccion": ["Direccion", "in"],
+    "telefono": ["Telefono", "in"],
+    "email": ["Email", "in"],
+    "estado": ["Estado", "=="],
+}
+opcionesProveedores = opcBusquedaHTML(listaBusquedaProveedores)
+
+listaBusquedaProductos = {
+    "idProducto": ["Identificador", "=="],
+    "nombre": ["Nombre", "In"],
+    "descripcion": ["Descripcion", "in"],
+    "estado": ["Estado", "=="],
+}
+opcionesProductos = opcBusquedaHTML(listaBusquedaProductos)
 
 @appDash.server.route('/', methods=['GET'])
 def index():
@@ -55,10 +95,12 @@ def validarLogin():
         # Entra cuando el llamado es hecho por metodo POST.
         userName = request.form['username']
         password = request.form['password']
-        if userName in datosUsuarios and password == datosUsuarios[userName]:
+        datUsuario = next((x for x in db.datosUsuarios if x["usuario"] == userName), None)
+
+        if datUsuario != None and datUsuario["clave"] == password:
             return render_template("Inicio.html")
         else:
-            flash("Datos de ingreso incorrectos")
+            miFlash("Datos de ingreso incorrectos")
             # mensaje = "Datos de ingreso incorrectos"
             # return render_template("index.html", mensajeInformativo=mensaje)
             return redirect("/index")
@@ -74,257 +116,241 @@ def inicio():
 #USUARIOS JMSS
 @appDash.server.route('/usuarios', methods=('GET','POST'))
 def usuarios():
-    return render_template("Usuarios.html")
+    global opcionesUsuarios, cabeceraUsuar
+    return render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opcionesUsuarios)
 
 
 @appDash.server.route('/ValidarBusquedaUser', methods=('GET','POST'))
 def ValidarBusquedaUser():
+    #JHMO
+    global listaBusquedaUsuarios, opcionesUsuarios, cabeceraUsuar
     if request.method == 'POST':
-        seleccion = request.form['select']
-        busqueda = request.form['text']
-        existe = 'NO'
-        if seleccion == 'usuario':
-            #Buscar un Usuario por su respectiva DESCRIPCIÓN (Usuario)
-            tam = (len(datosUsuar))
-            for i in range(tam):
-                if busqueda in datosUsuar[i][0]:
-                    data = [(datosUsuar[i][0],datosUsuar[i][1],datosUsuar[i][2],datosUsuar[i][3])]
-                    existe = "SI" 
+        campoBuscar = request.form['select']
+        texto = request.form['text'].upper().strip()
+        tipoBusqueda = listaBusquedaUsuarios[campoBuscar][1]
 
-            if existe == 'SI':
-                flash("El usuario " + busqueda + " Ya Existe En Nuestra Plataforma")
-                return render_template("Usuarios.html",headings=cabeceraUsuar ,data=data)
+        if len(texto) > 0:
+            if tipoBusqueda == "==":
+                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosUsuarios))
             else:
-                flash("El Usuario "+ busqueda + " No Fue Encontrado")
-                return render_template('Usuarios.html')
-
-        if seleccion == 'Identificador':
-            #Buscar un Usuario por su respectiva Identificador (Nombre)
-            tam = (len(datosUsuar))
-            data=[] #limpio la data
-            print("tam : ",tam)
-            for i in range(tam):
-                if (busqueda in datosUsuar[i][1]):
-                    existe = "SI"
-                    data.append((datosUsuar[i][0],datosUsuar[i][1],datosUsuar[i][2],datosUsuar[i][3]))
-                    #
-            if existe == 'SI':
-                    flash("El usuario Con El Identificador " + busqueda + ", Ya Existe!")
-                    return render_template("Usuarios.html",headings=cabeceraUsuar ,data=data)
-            else:
-                flash("El Usuario Con El Identificador "+ busqueda + ", No Fue Encontrado!")
-                return render_template('Usuarios.html')
-
-
-        if seleccion == 'Perfil':
-            #Buscar un Usuario por su respectiva Perfil (Rol)
-            data=[]
-            tam = (len(datosUsuar))
-            for i in range(tam):
-                if busqueda in datosUsuar[i][2]:
-                    data.append((datosUsuar[i][0],datosUsuar[i][1],datosUsuar[i][2],datosUsuar[i][3]))
-                    existe = "SI" 
-
-            if existe == 'SI':
-                flash("Datos Encontrados")
-                return render_template("Usuarios.html",headings=cabeceraUsuar ,data=data)
-            else:
-                flash("El Perfil "+ busqueda + " De Usuario, No Fue Encontrado")
-                return render_template('Usuarios.html')
-
-        if seleccion == 'Estado':
-            tam = (len(datosUsuar))
-            data=[] #limpio la data
-            for i in range(tam):
-                if (busqueda in datosUsuar[i][3]):
-                    existe = "SI"
-                    data.append((datosUsuar[i][0],datosUsuar[i][1],datosUsuar[i][2],datosUsuar[i][3]))
-                    #
-            if existe == 'SI':
-                flash("Los Perfiles De Estado " + busqueda + " Son: ")
-                return render_template("Usuarios.html",headings=cabeceraUsuar ,data=data)
-            else:
-                flash("Los Perfiles De Estado " + busqueda + " , No Fueron Encontrados!")
-                return redirect("/usuarios")
-
-
-@appDash.server.route('/insertarUsuarios', methods=('GET','POST'))
-def insertarUsuarios():
-    if request.method == 'POST':
-        # Entra cuando el llamado es hecho por metodo POST.
-        
-        cedula = request.form['cedula']
-        nombrecomplet = request.form['nombre']
-        direccion = request.form['direccion']
-        email = request.form['mail']
-        perfil = request.form['perfil']
-        estado = request.form['estado']
-        contraseña = request.form['password']
-        
-        #Datos para crear un Usuario (Cedula, nombre completo, dirección, email, perfil, estado y contraseña)
-        #El Usuario va a ser su Email
-        existe = "NO"
-        indice = 0
-        if existe == "SI":
-                flash("Registro Actualizado")
-                datosUsuar.pop(indice)
-                datosUsuar.append((email,nombrecomplet, perfil,estado))
+                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosUsuarios))
         else:
-            datosUsuar.append((email,nombrecomplet, perfil,estado))
-            flash("Se inserto un registro")
-            
+            listRta = list(db.datosUsuarios)
+        #print(listRta)
+
+        if len(listRta) > 0:
+            miFlash("Datos Encontrados")
+            opciones = opcBusquedaHTML(listaBusquedaUsuarios, campoBuscar)
+            rtaHTML = make_response(render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones, data=listRta))
+        else:
+            miFlash("Datos No Encontrados")
+            opciones = opcBusquedaHTML(listaBusquedaUsuarios, campoBuscar)
+            rtaHTML = make_response(render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones))
+
+        rtaHTML.set_cookie('campoBuscarUsr', campoBuscar)
+        rtaHTML.set_cookie('textoBuscarUsr', texto)
+        return rtaHTML
+    else:
+        return redirect("/usuarios")
+
+
+@appDash.server.route('/ajaxUsuarioMod', methods=('GET','POST'))
+def ajaxUsuarioMod():
+    global opcionesUsuarios, cabeceraUsuar
+    if request.method == 'POST':
+        idUsuario = request.form['id']
+        #print("idUsuario:",idUsuario)
+        usuario = db.buscarUsuario(idUsuario)
+        #
+        if usuario.tipoUsuario == "UsuarioFinal":
+            usuario.tipoUsuario1 = "selected"
+        elif usuario.tipoUsuario == "Administrador":
+            usuario.tipoUsuario2 = "selected"
+        elif usuario.tipoUsuario == "SuperAdministrador":
+            usuario.tipoUsuario3 = "selected"
+        #            
+        if usuario.estado == "Activo":
+            usuario.estado1 = "selected"
+        else:
+            usuario.estado2 = "selected"
+        #            
+        if usuario.cambiarClave == "1":
+            usuario.cambiarClaveChk = "checked"
+        else:
+            usuario.cambiarClaveChk = ""
+
+        #print("usuario.idUsuario:",usuario.idUsuario)
+        #return jsonify({'htmlresponse': render_template('modUsuarios.html',infoUsuario=usuario)})
+        rtaHTML = render_template('modUsuarios.html',infoUsuario=usuario)
+        #f = open("./xx_modUsuarios.html","w")
+        #f.write(xhtml)
+        #f.close()
+        return jsonify({'htmlresponse': rtaHTML})
+    else:
+        return redirect("/usuarios")
+ 
+
+@appDash.server.route('/ajaxUsuarioEli', methods=('GET','POST'))
+def ajaxUsuarioEli():
+    global opcionesUsuarios, cabeceraUsuar
+    print("entro /ajaxUsuarioEli")
+    if request.method == 'POST':
+        print("entro /ajaxUsuarioEli POST")
+        idUsuario = request.form['id']
+        print("idUsuario:",idUsuario)
+        usuario = db.buscarUsuario(idUsuario)
+
+        rtaHTML = render_template('eliUsuarios.html',infoUsuario=usuario)
+        return jsonify({'htmlresponse': rtaHTML})
+    else:
+        return redirect("/usuarios")
+
+
+@appDash.server.route('/modificarUsuarios', methods=('GET','POST'))
+def modificarUsuarios():
+    global opcionesUsuarios, cabeceraUsuar
+    #print("entro /modificarUsuarios")
+    if request.method == 'POST':
+        #print("entro /modificarUsuarios POST")
+        # OJO. Los campos tipo "checkbox" solo son retornando en el form cuando fueron marcados, 
+        # de lo contrario no se crean en la lista de campos del form.
+        datosUsuario = {
+            'idUsuario': request.form['idUsuario'],
+            'cedula': request.form['cedula'],
+            'usuario': request.form['usuario'],
+            'nombre': request.form['nombre'],
+            #'apellido': request.form['apellido'],
+            'email': request.form['email'],
+            'direccion': request.form['direccion'],
+            'tipoUsuario': request.form['tipoUsuario'],
+            'estado': request.form['estado'],
+            'clave': request.form['clave'],
+            'cambiarClave': ("1" if 'cambiarClave' in request.form else "0"),
+        }
+        usuario = db.Usuario(datosUsuario)
+        rta = db.actualizarUsuario(usuario)
+        #print("db.datosUsuarios",db.datosUsuarios)
+        if rta == 1:
+            miFlash("Se inserto un registro")
+        else:
+            miFlash("Registro Actualizado")
+
+        # cargar datos de busqueda desde las cookies.
+        campoBuscar = request.cookies.get('campoBuscarUsr')
+        texto = request.cookies.get('textoBuscarUsr')
+        tipoBusqueda = listaBusquedaUsuarios[campoBuscar][1]
+
+        if len(texto) > 0:
+            if tipoBusqueda == "==":
+                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosUsuarios))
+            else:
+                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosUsuarios))
+        else:
+            listRta = list(db.datosUsuarios)
+
+        if len(listRta) > 0:
+            #miFlash("Datos Encontrados")
+            opciones = opcBusquedaHTML(listaBusquedaUsuarios, campoBuscar)
+            rtaHTML = render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones, data=listRta)
+        else:
+            #miFlash("Datos No Encontrados")
+            opciones = opcBusquedaHTML(listaBusquedaUsuarios, campoBuscar)
+            rtaHTML = render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones)
+
+        return rtaHTML
+
+    else:
+        return redirect("/usuarios")
+
+
+@appDash.server.route('/eliminarUsuario', methods=('GET','POST'))
+def eliminarUsuario():
+    global opcionesUsuarios, cabeceraUsuar
+    #print("entro /eliminarUsuario")
+    if request.method == 'POST':
+        #print("entro /eliminarUsuario POST")
+        # OJO. Los campos tipo "checkbox" solo son retornando en el form cuando fueron marcados, 
+        # de lo contrario no se crean en la lista de campos del form.
+        idUsuario= request.form['idUsuario']
+        sino= request.form['sino']
+        #print("idUsuario", idUsuario)
+        #print("sino", sino)
+
+        if sino == "Si":
+            rta = db.eliminarUsuario(idUsuario)
+            #print("rta db.eliminarUsuario(idUsuario)",rta)
+            if rta == 1:
+                miFlash("Registro Eliminado")
+            else:
+                miFlash("Registro NO encontrado")
+
+        # cargar datos de busqueda desde las cookies.
+        campoBuscar = request.cookies.get('campoBuscarUsr')
+        texto = request.cookies.get('textoBuscarUsr')
+        tipoBusqueda = listaBusquedaUsuarios[campoBuscar][1]
+
+        if len(texto) > 0:
+            if tipoBusqueda == "==":
+                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosUsuarios))
+            else:
+                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosUsuarios))
+        else:
+            listRta = list(db.datosUsuarios)
+
+        if len(listRta) > 0:
+            #miFlash("Datos Encontrados")
+            opciones = opcBusquedaHTML(listaBusquedaUsuarios, campoBuscar)
+            rtaHTML = render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones, data=listRta)
+        else:
+            #miFlash("Datos No Encontrados")
+            opciones = opcBusquedaHTML(listaBusquedaUsuarios, campoBuscar)
+            rtaHTML = render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones)
+
+        return rtaHTML
+
+    else:
         return redirect("/usuarios")
 
 
 #PRODUCTOS PROVEEDORES
 @appDash.server.route('/proveedores', methods=('GET','POST'))
 def proveedores():
-    return render_template("Proveedores.html")
+    global opcionesProveedores, cabeceraProv
+    return render_template("Proveedores.html", headings=cabeceraProv, opcBusqueda=opcionesProveedores)
 
 @appDash.server.route('/buscarProveedores', methods=('GET','POST'))
 def buscarproveedores():
-    
+    #JHMO
+    global listaBusquedaProveedores, opcionesProveedores, cabeceraProv
     if request.method == 'POST':
-        #RJMM Entra cuando el llamado es hecho por metodo POST.
-        seleccion = request.form['select']
-        texto = request.form['text']
-        #RJMM Defino variable para que el ciclo se ejecute hasta el fin
-        existe="NO"
-        
-        #RJMM Condicion para determinar busqueda x nit
-        if seleccion == "nit":
-            #RJMM se tiene en cuenta en caso de agregar, nuevos proveedores
-            tam = (len(datosProveedores))
-            #RJMM Recorro la data
-            for i in range(tam):
-                if (datosProveedores[i][0]==texto):
-                    #RJMM construyo la data
-                    data = [(datosProveedores[i][0],datosProveedores[i][1],datosProveedores[i][2],datosProveedores[i][3],datosProveedores[i][4],datosProveedores[i][5])]
-                    existe = "SI"
-                    #indice = i
-            
-            if existe == "SI":
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")
-                #RJMM retorno la pagina, pero envio por parametros los valores de la pagina
-                #data que necesita
-                #return render_template("Proveedores.html",headings=headings,data=[(datosProveedores[indice][0],datosProveedores[indice][1],datosProveedores[indice][2],datosProveedores[indice][3],datosProveedores[indice][4],datosProveedores[indice][5])])
-                return render_template("Proveedores.html",headings=cabecera,data=data)
-            
-            else:
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/proveedores")
-        
-        #RJMM Condicion para determinar busqueda x nombre de la empresa
-        if seleccion == "nombre":
-            #RJMM se tiene en cuenta en caso de agregar, nuevos proveedores
-            tam = (len(datosProveedores))
-            data=[] #limpio la data
-            print("tam : ",tam)
-            for i in range(tam):
-                if (texto in datosProveedores[i][1]):
-                    existe = "SI"
-                    data.append((datosProveedores[i][0],datosProveedores[i][1],datosProveedores[i][2],datosProveedores[i][3],datosProveedores[i][4],datosProveedores[i][5]))
-                    #print("Data :",data)
-            if existe == "SI":
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")
-                #RJMM retorno la pagina, pero envio por parametros los valores de la pagina
-                #data que necesita
-                return render_template("Proveedores.html",headings=cabecera,data=data)
-            else:
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/proveedores")
+        campoBuscar = request.form['select']
+        texto = request.form['text'].upper().strip()
+        tipoBusqueda = listaBusquedaProveedores[campoBuscar][1]
 
-        #RJMM Condicion para determinar busqueda x direccion
-        if seleccion == "direccion":
-            #RJMM se tiene en cuenta en caso de agregar, nuevos proveedores
-            tam = (len(datosProveedores))
-            data=[] #limpio la data
-            for i in range(tam):
-                #Busco el texto de acuerdo a la razon social
-                if (texto in datosProveedores[i][2]):
-                    existe = "SI"
-                    data.append((datosProveedores[i][0],datosProveedores[i][1],datosProveedores[i][2],datosProveedores[i][3],datosProveedores[i][4],datosProveedores[i][5]))
-                
-            if existe == "SI":
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")
-                #RJMM retorno la pagina, pero envio por parametros los valores de la pagina
-                #data que necesita
-                return render_template("Proveedores.html",headings=cabecera,data=data)
+        if len(texto) > 0:
+            if tipoBusqueda == "==":
+                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProveedores))
             else:
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/proveedores")
+                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProveedores))
+        else:
+            listRta = list(db.datosProveedores)
 
-        #RJMM Condicion para determinar busqueda x telefono
-        if seleccion == "telefono":
-            #RJMM se tiene en cuenta en caso de agregar, nuevos proveedores
-            tam = (len(datosProveedores))
-            data=[] #limpio la data
-            for i in range(tam):
-                #Busco el texto de acuerdo a la razon social
-                if (texto in datosProveedores[i][3]):
-                    existe = "SI"
-                    data.append((datosProveedores[i][0],datosProveedores[i][1],datosProveedores[i][2],datosProveedores[i][3],datosProveedores[i][4],datosProveedores[i][5]))
-                
-            if existe == "SI":
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")
-                #RJMM retorno la pagina, pero envio por parametros los valores de la pagina
-                #data que necesita
-                return render_template("Proveedores.html",headings=cabecera,data=data)
-            else:
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/proveedores")    
-
-        #RJMM Condicion para determinar busqueda x direccion
-        if seleccion == "email":
-            #RJMM se tiene en cuenta en caso de agregar, nuevos proveedores
-            tam = (len(datosProveedores))
-            data=[] #limpio la data
-            for i in range(tam):
-                #Busco el texto de acuerdo a la razon social
-                if (texto in datosProveedores[i][4]):
-                    existe = "SI"
-                    data.append((datosProveedores[i][0],datosProveedores[i][1],datosProveedores[i][2],datosProveedores[i][3],datosProveedores[i][4],datosProveedores[i][5]))
-                
-            if existe == "SI":
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")
-                #RJMM retorno la pagina, pero envio por parametros los valores de la pagina
-                #data que necesita
-                return render_template("Proveedores.html",headings=cabecera,data=data)
-            else:
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/proveedores")
-
-        #RJMM Condicion para determinar busqueda x direccion
-        if seleccion == "estado":
-            #RJMM se tiene en cuenta en caso de agregar, nuevos proveedores
-            tam = (len(datosProveedores))
-            data=[] #limpio la data
-            for i in range(tam):
-                #Busco el texto de acuerdo a la razon social
-                if (datosProveedores[i][5] == texto):
-                    existe = "SI"
-                    data.append((datosProveedores[i][0],datosProveedores[i][1],datosProveedores[i][2],datosProveedores[i][3],datosProveedores[i][4],datosProveedores[i][5]))
-                
-            if existe == "SI":
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")
-                #RJMM retorno la pagina, pero envio por parametros los valores de la pagina
-                #data que necesita
-                return render_template("Proveedores.html",headings=cabecera,data=data)
-            else:
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/proveedores")    
+        if len(listRta) > 0:
+            data = []
+            for x in listRta:
+                valores = list(x.values())
+                # Se quita la columna de Id
+                del valores[0]
+                # Se adiciona al resultado
+                data.append(valores)
+            miFlash("Datos Encontrados")
+            opciones = opcBusquedaHTML(listaBusquedaProveedores, campoBuscar)
+            return render_template("Proveedores.html", headings=cabeceraProv, opcBusqueda=opciones, data=data)
+        else:
+            miFlash("Datos No Encontrados")
+            return render_template("Proveedores.html", headings=cabeceraProv, opcBusqueda=opcionesProveedores)
+    else:
+        return render_template("Proveedores.html", headings=cabeceraProv, opcBusqueda=opcionesProveedores)
                    
 
 @appDash.server.route('/insertarProveedor', methods=('GET','POST'))
@@ -350,12 +376,12 @@ def insertarproveedor():
                 indice = i              
 
         if existe == "SI":
-                flash("Registro Actualizado")
+                miFlash("Registro Actualizado")
                 datosProveedores.pop(indice)
                 datosProveedores.append((nit,razonSocial,direccion, telefono,email,estado))
         else:
             datosProveedores.append((nit,razonSocial,direccion, telefono,email,estado))
-            flash("Se inserto un registro")
+            miFlash("Se inserto un registro")
             
         return redirect("/proveedores")        
 
@@ -363,90 +389,42 @@ def insertarproveedor():
 
 @appDash.server.route('/productos', methods=('GET','POST'))
 def productos():
-    return render_template("Productos.html")
+    global opcionesProductos, cabeceraProd
+    # return render_template("Productos.html")
+    return render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opcionesProductos)
 
 @appDash.server.route('/buscarProductos', methods=('GET','POST'))
 def buscarproductos():
-
+    #JHMO
+    global listaBusquedaProductos, opcionesProductos, cabeceraProd
     if request.method == 'POST':
-        #RJMM Entra cuando el llamado es hecho por metodo POST.
-        seleccion = request.form['select']
-        texto = request.form['text']
-        #RJMM Defino variable para que el ciclo se ejecute hasta el fin
-        existe="NO"
-        
-        #RJMM Condicion para determinar busqueda x nit
-        if seleccion == "id":
-            #RJMM se tiene en cuenta en caso de agregar, nuevos proveedores
-            tam = (len(datosProductos))
-            #RJMM Recorro la data
-            for i in range(tam):
-                if (datosProductos[i][0]==int(texto)):
-                    #RJMM construyo la data
-                    data = [(datosProductos[i][0],datosProductos[i][1],datosProductos[i][2],datosProductos[i][3],datosProductos[i][4],datosProductos[i][5])]
-                    existe = "SI"
-                    #indice = i
-            
-            if existe == "SI":
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")
-                #RJMM retorno la pagina, pero envio por parametros los valores de la pagina
-                #data que necesita
-                #return render_template("Proveedores.html",headings=headings,data=[(datosProveedores[indice][0],datosProveedores[indice][1],datosProveedores[indice][2],datosProveedores[indice][3],datosProveedores[indice][4],datosProveedores[indice][5])])
-                return render_template("Productos.html",headings=cabeceraP,data=data)
-            
+        campoBuscar = request.form['select']
+        texto = request.form['text'].upper().strip()
+        tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
+
+        if len(texto) > 0:
+            if tipoBusqueda == "==":
+                listRta = list(filter(lambda item: item[campoBuscar] == texto, db.datosProductos))
             else:
-                #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/productos")
-        
-        if seleccion == "nombre": #RJMM se tiene en cuenta en caso de agregar, nuevos proveedores
-            tam = (len(datosProductos))
-            data=[] #limpio la data
-            print("tam : ",tam)
+                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProductos))
+        else:
+            listRta = list(db.datosProductos)
 
-            for i in range(tam):
-                if (texto in datosProductos[i][1]):
-                    existe = "SI"
-                    data.append((datosProductos[i][0],datosProductos[i][1],datosProductos[i][2],datosProductos[i][3],datosProductos[i][4],datosProductos[i][5]))
+        if len(listRta) > 0:
+            data = []
+            for x in listRta:
+                valores = list(x.values())
+                data.append(valores)
+            miFlash("Datos Encontrados")
+            opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
+            return render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, data=data)
+        else:
+            miFlash("Datos No Encontrados")
+            opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
+            return redirect("Productos.html", headings=cabeceraProd, opcBusqueda=opciones)
+    else:
+        return redirect("Productos.html", headings=cabeceraProd, opcBusqueda=opcionesProductos)
 
-            if existe == "SI": #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")               
-                return render_template("Productos.html",headings=cabeceraP,data=data)  #RJMM retorno la pagina, pero envio por parametros los valores de la pagina
-            else:  #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/productos")
-
-        if seleccion == "descripcion":
-            tam = (len(datosProductos))
-            data=[] #limpio la data
-            print("tam : ",tam)
-            for i in range(tam):
-                if (texto in datosProductos[i][4]):
-                    existe = "SI"
-                    data.append((datosProductos[i][0],datosProductos[i][1],datosProductos[i][2],datosProductos[i][3],datosProductos[i][4],datosProductos[i][5]))
-            if existe == "SI": #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")
-                return render_template("Productos.html",headings=cabeceraP,data=data)
-            else:  #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/productos")
-
-        if seleccion == "estado":  #RJMM se tiene en cuenta en caso de agregar, nuevos proveedores
-            tam = (len(datosProductos))
-            data=[] #limpio la data
-            for i in range(tam):  #RJMM Recorro la data
-                if (datosProductos[i][5] == texto):
-                    existe = "SI"
-                    data.append((datosProductos[i][0],datosProductos[i][1],datosProductos[i][2],datosProductos[i][3],datosProductos[i][4],datosProductos[i][5]))
-            
-            if existe == "SI": #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos Encontrados")
-                return render_template("Productos.html",headings=cabeceraP,data=data)
-            
-            else: #RJMM Mensaje flash, muestra si el dato se encontro
-                flash("Datos No Encontrados")
-                return redirect("/productos")
 
 #metodo insertar producto
 @appDash.server.route('/insertarProducto', methods=('GET','POST'))
@@ -470,12 +448,12 @@ def insertarproducto():
                 indice = i              
 
         if existe == "SI":
-                flash("Registro Actualizado")
+                miFlash("Registro Actualizado")
                 datosProductos.pop(indice)
                 datosProductos.append((int(codigo),nombre,int(cantidadMinima),int(cantidadDisponible),descripcion,estado))
         else:
             datosProductos.append((int(codigo),nombre,int(cantidadMinima),int(cantidadDisponible),descripcion,estado))
-            flash("Se inserto un registro")
+            miFlash("Se inserto un registro")
             
         return redirect("/productos") 
 

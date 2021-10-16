@@ -48,77 +48,97 @@ appDash.layout = html.Div(
             ],
             className="header",
         ),
-        html.Div(
+        html.Table(
             children=[
-                html.Div(
-                    children= dcc.Graph(
-                        id='example-graph',
-                        config={"displayModeBar": False},
-                        figure={
-                            'data': [trace1, trace2, trace3, trace4],
-                            'layout':
-                            go.Layout(title='Estado de Pedidos a los Proveedores', barmode='stack')
-                        },
-                    ),
-                    className="card",
+                html.Tr(
+                    children=[
+                        html.Td(
+                            children= dcc.Graph(
+                                id='example-graph',
+                                config={"displayModeBar": False},
+                                figure={
+                                    'data': [trace1, trace2, trace3, trace4],
+                                    'layout':
+                                    go.Layout(title='Estado de Pedidos a los Proveedores', barmode='stack')
+                                },
+                            ),
+                            className="card",
+                        ),
+                        html.Td(
+                            children=dcc.Graph(
+                                id="price-chart",
+                                config={"displayModeBar": False},
+                                figure={
+                                    "data": [
+                                        {
+                                            "x": data["Date"],
+                                            "y": data["AveragePrice"],
+                                            "type": "lines",
+                                            "hovertemplate": "$%{y:.2f}"
+                                                            "<extra></extra>",
+                                        },
+                                    ],
+                                    "layout": {
+                                        "title": {
+                                            "text": "Stock de Inventario",
+                                            "x": 0.05,
+                                            "xanchor": "left",
+                                        },
+                                        "xaxis": {"fixedrange": True},
+                                        "yaxis": {
+                                            "tickprefix": "$",
+                                            "fixedrange": True,
+                                        },
+                                        "colorway": ["#17B897"],
+                                    },
+                                },
+                            ),
+                            className="card",
+                        ),
+                    ]
                 ),
-                html.Div(
-                    children=dcc.Graph(
-                        id="price-chart",
-                        config={"displayModeBar": False},
-                        figure={
-                            "data": [
-                                {
-                                    "x": data["Date"],
-                                    "y": data["AveragePrice"],
-                                    "type": "lines",
-                                    "hovertemplate": "$%{y:.2f}"
-                                                     "<extra></extra>",
+                html.Tr(
+                    children=[
+                        html.Td(
+                            children= dcc.Graph(
+                                id='example-graph2',
+                                config={"displayModeBar": False},
+                                figure={
+                                    'data': [trace1, trace2, trace3, trace4],
+                                    'layout':
+                                    go.Layout(title='Estado de Pedidos a los Proveedores', barmode='stack')
                                 },
-                            ],
-                            "layout": {
-                                "title": {
-                                    "text": "Stock de Inventario",
-                                    "x": 0.05,
-                                    "xanchor": "left",
+                            ),
+                            className="card",
+                        ),
+                        html.Td(
+                            children=dcc.Graph(
+                                id="volume-chart",
+                                config={"displayModeBar": False},
+                                figure={
+                                    "data": [
+                                        {
+                                            "x": data["Date"],
+                                            "y": data["Total Volume"],
+                                            "type": "lines",
+                                        },
+                                    ],
+                                    "layout": {
+                                        "title": {
+                                            "text": "Unidades Vendidas",
+                                            "x": 0.05,
+                                            "xanchor": "left",
+                                        },
+                                        "xaxis": {"fixedrange": True},
+                                        "yaxis": {"fixedrange": True},
+                                        "colorway": ["#E12D39"],
+                                    },
                                 },
-                                "xaxis": {"fixedrange": True},
-                                "yaxis": {
-                                    "tickprefix": "$",
-                                    "fixedrange": True,
-                                },
-                                "colorway": ["#17B897"],
-                            },
-                        },
-                    ),
-                    className="card",
-                ),
-                html.Div(
-                    children=dcc.Graph(
-                        id="volume-chart",
-                        config={"displayModeBar": False},
-                        figure={
-                            "data": [
-                                {
-                                    "x": data["Date"],
-                                    "y": data["Total Volume"],
-                                    "type": "lines",
-                                },
-                            ],
-                            "layout": {
-                                "title": {
-                                    "text": "Unidades Vendidas",
-                                    "x": 0.05,
-                                    "xanchor": "left",
-                                },
-                                "xaxis": {"fixedrange": True},
-                                "yaxis": {"fixedrange": True},
-                                "colorway": ["#E12D39"],
-                            },
-                        },
-                    ),
-                    className="card",
-                ),
+                            ),
+                            className="card",
+                        ),
+                    ]
+                )
             ],
             className="wrapper",
         ),

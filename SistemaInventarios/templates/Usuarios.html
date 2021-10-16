@@ -7,13 +7,20 @@
     <meta name="description" content="">
     <meta name="page_type" content="np-template-header-footer-from-plugin">
     <title>Usuarios</title>
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
     <link rel="stylesheet" href="/static/css/nicepage.css" media="screen">
-<link rel="stylesheet" href="/static/css/Usuarios.css" media="screen">
-    <script class="u-script" type="text/javascript" src="/static/js/jquery.js" defer=""></script>
+    <link rel="stylesheet" href="/static/css/Usuarios.css" media="screen">
+    <!-- <script class="u-script" type="text/javascript" src="/static/js/jquery.js" defer=""></script> -->
     <script class="u-script" type="text/javascript" src="/static/js/nicepage.js" defer=""></script>
+
+
     <meta name="generator" content="Nicepage 3.26.0, nicepage.com">
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
-    
+    <script src="{{ url_for('static', filename='js/utilidades.js') }}"></script>
     
     
     
@@ -82,9 +89,7 @@
                       <label for="select-82ce" class="u-label">Buscar Por</label>
                       <div class="u-form-select-wrapper">
                         <select id="select-82ce" name="select" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white u-input-1">
-                          <option value="usuario">Usuario</option>
-                          <option value="Perfil">Perfil</option>
-                          <option value="Estado">Estado</option>
+                          {{opcBusqueda|safe}}
                         </select>
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1" class="u-caret"><path fill="currentColor" d="M4 8L0 4h8z"></path></svg>
                       </div>
@@ -94,7 +99,7 @@
                       <input type="text" placeholder="Texto A Buscar" id="text-6982" name="text" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white u-input-2">
                     </div>
                     <div class="u-align-right u-form-group u-form-submit">
-                      <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1">Enviar</a>
+                      <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1">Buscar</a>
                       <input type="submit" value="submit" class="u-form-control-hidden">
                     </div>
                     <div class="u-form-send-message u-form-send-success"> Gracias! Tu mensaje ha sido enviado. </div>
@@ -102,7 +107,7 @@
                     <input type="hidden" value="" name="recaptchaResponse">
                   </form>
                 </div>
-                <a href="#sec-df98" class="u-btn u-btn-round u-button-style u-dialog-link u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-2">CREAR USUARIO</a>
+                <a href="#IdModalModUsuario" class="u-btn u-btn-round u-button-style u-dialog-link u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-2">CREAR USUARIO</a>
                 <a href="/inicio" data-page-id="917302295" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-3">Salir</a>
                 <div class="u-border-2 u-border-white u-container-style u-group u-shape-rectangle u-group-3">
                   <div class="u-container-layout u-container-layout-3">
@@ -111,39 +116,40 @@
                         <div class="u-align-center u-table u-table-responsive u-table-1">
                           <p class="u-align-center u-text u-text-3"><em>
                             {% with messages = get_flashed_messages() %}
-                                    
-                                    <div class=flashes><p style="color:#FF0000">
-                                        {% for message in messages %}
-                                            {{ message }}
-                                        {% endfor %}
-                                      </p></div>
-                                    
-                                  {% endwith %}
-                
-                                  </em></p>
+                              <div class=flashes><p style="color:#000000">
+                                  {% for message in messages %}
+                                      {{ message }}
+                                  {% endfor %}
+                              </p></div>
+                            {% endwith %}
+                            </em></p>
                           <table class="u-table-entity">
                             <colgroup>
                               <tbody class="u-table-body">
-                              <tr style="height: 46px;">
-                                <!--JMSS-->
-                                {% for header in headings %}
-                                  <th class="u-align-center u-border-1 u-border-grey-30 u-table-cell u-table-cellALL">{{ header }}</th>
-                                {% endfor %}
-                              </tr>
-                              {% for row in data %}
-                              <tr style="height: 65px;">
-                                  
-                                         {%for cell in row %}
-                                         <td align="center" class="u-border-1 u-border-grey-30 u-table-cell">{{ cell }}</td>
-                                    
-                                         {% endfor %}
-                                    <td class="u-border-1 u-border-grey-30 u-table-cell">
-                                      <div align="center">
-                                  <span data-href="#sec-df98" class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black btn-editar"></span>&nbsp;&nbsp;
-                                        <span data-href="#sec-6d4f" class="u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black btn-borrar"></span>
-                                  
-                                  </div></td>
-                                </tr>
+                                  <tr style="height: 46px;">
+                                    <!--JMSS-->
+                                    {% for header in headings %}
+                                      <th class="u-align-center u-border-1 u-border-grey-30 u-table-cell u-table-cellALL">{{ header }}</th>
+                                    {% endfor %}
+                                    </tr>
+                                  {% for row in data %}
+                                    <tr style="height: 65px;">
+                                        <td align="center" class="u-border-1 u-border-grey-30 u-table-cell">{{row.usuario}}</td>
+                                        <td align="center" class="u-border-1 u-border-grey-30 u-table-cell">{{row.nombre}}</td>
+                                        <td align="center" class="u-border-1 u-border-grey-30 u-table-cell">{{row.tipoUsuario }}</td>
+                                        <td align="center" class="u-border-1 u-border-grey-30 u-table-cell">{{row.estado }}</td>
+                                        <td class="u-border-1 u-border-grey-30 u-table-cell">
+                                        <div align="center">
+                                          <!--
+                                          <span data-id='{{row.idUsuario}}' class="usuarioMod u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black btn-editar"></span>&nbsp;&nbsp;
+                                          <span data-id='{{row.idUsuario}}' class="usuarioEli u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black btn-borrar"></span>
+                                          -->
+                                          <!-- <button data-id='{{row.idUsuario}}' class="usuarioMod btn btn-success">Editar</button> -->
+                                          <button data-id='{{row.idUsuario}}' class="usuarioMod u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black btn-editar"></button>
+                                          <button data-id='{{row.idUsuario}}' class="usuarioEli u-dialog-link u-icon u-icon-rounded u-palette-1-base u-spacing-10 u-text-black btn-borrar"></button>
+                                        </div>
+                                        </td>
+                                    </tr>
                                   {% endfor %}
                                   <!--JMSS-->
                                 </tbody>
@@ -174,11 +180,12 @@
       </div>
     </section>
     
-    
-    
-    
-    
-    
+    <script type='text/javascript'>
+      fijar_saltoModal(document, claseMod=".usuarioMod", ruta="/ajaxUsuarioMod", 
+        campoId="id", modalClassBody=".formModalModUsuario", modalIdSeccion="#IdModalModUsuario");
+      fijar_saltoModal(document, claseMod=".usuarioEli", ruta="/ajaxUsuarioEli", 
+        campoId="id", modalClassBody=".formModalEliUsuario", modalIdSeccion="#IdModalEliUsuario");
+    </script>
     
     
     <footer class="u-align-center u-clearfix u-footer u-grey-80 u-footer" id="sec-2012"><div class="u-clearfix u-sheet u-sheet-1">
@@ -196,15 +203,18 @@
         <span>HTML Builder</span>
       </a>. 
     </section>
-  <section class="u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-section-4" id="sec-6d4f">
+  <div class="modal fade" id="IdModalEliUsuario" role="dialog">
+    <section class="u-clearfix u-container-style u-section-4">
+    <!-- <section class="u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-section-4" id="sec-6d4f"> -->
       <div class="u-container-style u-dialog u-radius-16 u-shape-round u-white u-dialog-1">
-        <div class="u-container-layout u-container-layout-1">
-          <p class="u-text u-text-default u-text-1">Esta seguro que desea eliminar el registro?</p>
-          <a href="https://nicepage.com/c/product-list-website-templates" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-1">SI</a>
-          <a href="https://nicepage.com/c/product-list-website-templates" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-2">NO</a>
-        </div><button class="u-dialog-close-button u-icon u-text-grey-40 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-8cfb"></use></svg><svg class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-8cfb"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
+        
+        <div class="formModalEliUsuario">
+        </div>
+  
       </div>
-    </section><style>.u-section-4 {
+    </section>
+  </div>
+<style>.u-section-4 {
   min-height: 866px;
 }
 
@@ -287,70 +297,71 @@
   .u-section-4 .u-btn-2 {
     margin-right: 0;
   }
-}</style><section class="u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-section-5" id="sec-df98">
-      <div class="u-container-style u-dialog u-radius-30 u-shape-round u-white u-dialog-1">
-        <div class="u-container-layout u-container-layout-1">
-          <h3 class="u-text u-text-1">REGISTRO DE USUARIO</h3>
-          <div class="u-form u-form-1">
-            <form action="/insertarUsuarios" method="POST" class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form-1" style="padding: 10px;" redirect="true">
-              <div class="u-form-group u-form-name">
-                <label for="name-0f37" class="u-label">Cedula</label>
-                <input type="text" placeholder="Introduzca su nombre" id="name-0f37" name="cedula" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="">
-              </div>
-              <div class="u-form-group u-form-group-2">
-                <label for="email-0f37" class="u-label">Nombre Completo</label>
-                <input type="text" placeholder="Nombre Completo" id="email-0f37" name="nombre" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="required">
-              </div>
-              <div class="u-form-group u-form-group-3">
-                <label for="text-67ca" class="u-label">Dirección</label>
-                <input type="text" placeholder="Dirección" id="text-67ca" name="direccion" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
-              </div>
-              <div class="u-form-email u-form-group u-form-group-5">
-                <label for="email-d318" class="u-label">Correo Electrónico</label>
-                <input type="email" placeholder="Introduzca una dirección de correo electrónico válida" id="email-d318" name="mail" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="">
-              </div>
-              <div class="u-form-group u-form-select u-form-group-5">
-                <label for="text-7a82" class="u-label">Perfil</label>
-                <div class="u-form-select-wrapper">
-                  <select id="stext-7a82" name="perfil" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
-                    <option value="Usuario Final">Usuario Final</option>
-                    <option value="Administrador">Administrador</option>
-                    <option value="SuperAdministrador">SuperAdministrador</option>
-                  </select>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1" class="u-caret"><path fill="currentColor" d="M4 8L0 4h8z"></path></svg>
-                </div>
-              </div>
-              <div class="u-form-group u-form-select u-form-group-6">
-                <label for="select-f7cf" class="u-label">Estado</label>
-                <div class="u-form-select-wrapper">
-                  <select id="select-f7cf" name="estado" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
-                    <option value="Activo">Activo</option>
-                    <option value="Inactivo">Inactivo</option>
-                  </select>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1" class="u-caret"><path fill="currentColor" d="M4 8L0 4h8z"></path></svg>
-                </div>
-              </div>
-              <div class="u-form-group u-form-group-7">
-                <label for="text-65e8" class="u-label">Contraseña</label>
-                <input type="text" placeholder="Contraseña" id="text-65e8" name="password" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
-              </div>
-              <div class="u-form-checkbox u-form-group u-form-group-8">
-                <input type="checkbox" id="checkbox-1c85" name="CambioPassSesion" value="On">
-                <label for="checkbox-1c85" class="u-label">Usuario debe cambiar la contraseña al siguiente inicio de sesión</label>
-              </div>
-              <div class="u-align-right u-form-group u-form-submit">
-                <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1">Enviar</a>
-                <input type="submit" value="submit" class="u-form-control-hidden">
-              </div>
-              <div class="u-form-send-message u-form-send-success"> Gracias! Tu mensaje ha sido enviado. </div>
-              <div class="u-form-send-error u-form-send-message">No se puede enviar su mensaje. Por favor, corrija los errores y vuelva a intentarlo.</div>
-              <input type="hidden" value="" name="recaptchaResponse">
-            </form>
-          </div>
-          <a href="/usuarios" data-page-id="88368744" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-2">CANCELAR</a>
-        </div><button class="u-dialog-close-button u-icon u-text-grey-40 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-e2c9"></use></svg><svg class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-e2c9"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
+}
+</style>
+
+<!-- <div class="modal fade" id="IdModalModUsuario" role="dialog"> -->
+<!-- <div class="modal fade u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-section-5 u-dialog-open" id="IdModalModUsuario" role="dialog"> -->
+<!-- modal:manejo ventana modal, fade:efecto desvaneciente -->
+
+<div class="modal fade" id="IdModalModUsuario" role="dialog">
+<section class="u-clearfix u-container-style u-section-5">
+<!--   
+  <section class="u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-section-5">
+  <section class="u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-section-4" id="sec-6d4f"></section>
+  <section class="u-align-center u-clearfix u-image u-shading u-section-1" id="carousel_c016" data-image-width="2250" data-image-height="1500">
+ -->    
+  <div class="u-container-style u-dialog u-radius-30 u-shape-round u-white u-dialog-1">
+    <div class="u-container-layout u-container-layout-1">
+      <h3 class="u-text u-text-1">REGISTRO DE USUARIO</h3>
+      <!-- <button type="button" class="close" data-dismiss="modal">×</button> -->
+      <button type="button" class="close u-dialog-close-button u-icon u-text-grey-40 u-icon-1" data-dismiss="modal"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-e2c9"></use></svg><svg class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-e2c9"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
+      <div class="u-form u-form-1">
+        <div class="formModalModUsuario">
+        </div>
       </div>
-    </section><style>.u-section-5 {
+      <a data-page-id="88368744" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-2" data-dismiss="modal">CANCELAR</a>
+    </div>
+    <!-- </div><button class="u-dialog-close-button u-icon u-text-grey-40 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-e2c9"></use></svg><svg class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-e2c9"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button> </div> -->
+</section>
+</div>
+
+
+<!-- Version original con bootstrap
+<div class="modal fade" id="IdModalModUsuario" role="dialog">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">REGISTRO DE USUARIO</h4>
+            <button type="button" class="close" data-dismiss="modal">×</button>
+          </div>
+          <div class="formModalModUsuario">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+ -->
+
+ <!-- Original en Nicepage
+<section class="u-black u-clearfix u-container-style u-dialog-block u-opacity u-opacity-70 u-section-5" id="IdModalModUsuario">
+  <div class="u-container-style u-dialog u-radius-30 u-shape-round u-white u-dialog-1">
+    <div class="u-container-layout u-container-layout-1">
+      <h3 class="u-text u-text-1">REGISTRO DE USUARIO</h3>
+      <div class="u-form u-form-1">
+        <div class="formModalModUsuario">
+        </div>
+      </div>
+      <a href="/usuarios" data-page-id="88368744" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-2">CANCELAR</a>
+    </div><button class="u-dialog-close-button u-icon u-text-grey-40 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-e2c9"></use></svg><svg class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-e2c9"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
+  </div>
+</section>
+-->
+
+<style>
+.u-section-5 {
   min-height: 962px;
 }
 
