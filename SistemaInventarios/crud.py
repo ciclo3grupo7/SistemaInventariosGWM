@@ -1,4 +1,14 @@
 from SistemaInventarios.modelsDB import *
+from playhouse.shortcuts import model_to_dict
+
+#Validacion datos Vacios
+def is_empty(data_structure):
+    if data_structure:
+        #print("No está vacía",data_structure)
+        return True
+    else:
+        #print("Está vacía")
+        return False
 
 #CRUD USUARIOS
 
@@ -8,7 +18,6 @@ class Usuario():
       self.cedula = datosUsuario['cedula']
       self.usuario = datosUsuario['usuario']
       self.nombre = datosUsuario['nombre']
-      #self.apellido = datosUsuario['apellido']
       self.email = datosUsuario['email']
       self.direccion = datosUsuario['direccion']
       self.tipoUsuario = datosUsuario['tipoUsuario']
@@ -30,7 +39,8 @@ def consultar_usuarios(campoBuscar="", valor=""):
     elif campoBuscar == "usuario":
         query = list(Usuarios.select().where(Usuarios.usuario == valor).dicts())
     elif campoBuscar == "nombre":
-        query = list(Usuarios.select().where(Usuarios.nombre == valor).dicts())
+        #query = list(Usuarios.select().where(Usuarios.nombre.startswith(valor)).dicts())
+        query = list(Usuarios.select().where(Usuarios.nombre.contains(valor)).dicts())
     elif campoBuscar == "tipoUsuario":
         query = list(Usuarios.select().where(Usuarios.tipoUsuario == valor).dicts())
     elif campoBuscar == "estado":
@@ -38,16 +48,21 @@ def consultar_usuarios(campoBuscar="", valor=""):
     return query
 
 def consultar_usuario(idUsuario=-1, usuario=""):
-    #print("entro consultar_usuario: ", idUsuario)
+    
     if idUsuario != -1:
-        datosUsuario = list(Usuarios.select().where(Usuarios.idUsuario == idUsuario).dicts())
-        usuario = Usuario(datosUsuario[0])
+            datosUsuario = list(Usuarios.select().where(Usuarios.idUsuario == idUsuario).dicts())
+            usuario = Usuario(datosUsuario[0])
     elif len(usuario) > 0:
-        datosUsuario = list(Usuarios.select().where(Usuarios.usuario == usuario).dicts())
-        usuario = Usuario(datosUsuario[0])
+            datosUsuario = list(Usuarios.select().where(Usuarios.usuario == usuario).dicts())
+            if (is_empty(datosUsuario)):
+                usuario = Usuario(datosUsuario[0])
+            else:
+                usuario = None
     else:
-        usuario = None
+            usuario = None
+        
     return usuario
+    
 
 def insertar_usuario(datosUsuario):
     #print("insertar_usuario datosUsuario:",datosUsuario)
@@ -92,18 +107,22 @@ class Proveedor():
 def consultar_proveedores(campoBuscar="", valor=""):
     #print("entro consultar_usuario: ", campoBuscar, valor)
     query = []
+    print("Valor :",valor)
     if len(campoBuscar) == 0:
         query = list(Proveedores.select().dicts())
     if campoBuscar == "idProveedor":
         query = list(Proveedores.select().where(Proveedores.idProveedor == valor).dicts())
     elif campoBuscar == "nit":
         query = list(Proveedores.select().where(Proveedores.nit == valor).dicts())
-    elif campoBuscar == "Razon Social":
-        query = list(Proveedores.select().where(Proveedores.razonSocial == valor).dicts())
+    elif campoBuscar == "nombre":
+        #query = list(Proveedores.select().where(Proveedores.nombre.startswith(valor)).dicts())
+        query = list(Proveedores.select().where(Proveedores.nombre.contains(valor)).dicts())
     elif campoBuscar == "direccion":
-        query = list(Proveedores.select().where(Proveedores.direccion == valor).dicts())
+        query = list(Proveedores.select().where(Proveedores.direccion.contains(valor)).dicts())
     elif campoBuscar == "telefono":
-        query = list(Proveedores.select().where(Proveedores.telefono == valor).dicts())
+        query = list(Proveedores.select().where(Proveedores.telefono.contains(valor)).dicts())
+    elif campoBuscar == "email":
+        query = list(Proveedores.select().where(Proveedores.email.contains(valor)).dicts())
     elif campoBuscar == "estado":
         query = list(Proveedores.select().where(Proveedores.estado == valor).dicts())
     return query
@@ -152,13 +171,14 @@ class Producto():
       self.estado = datosProducto['estado']
       
       
+      
     def __enter__(self):
       pass
     def __exit__(self, type, val, tb):
       pass
 
 def consultar_productos(campoBuscar="", valor=""):
-    #print("entro consultar_producto: ", campoBuscar, valor)
+    print("entro consultar_producto: ", campoBuscar, valor)
     query = []
     if len(campoBuscar) == 0:
         query = list(Productos.select().dicts())
@@ -166,8 +186,9 @@ def consultar_productos(campoBuscar="", valor=""):
         query = list(Productos.select().where(Productos.idProducto == valor).dicts())
     elif campoBuscar == "codigo":
         query = list(Productos.select().where(Productos.codigo == valor).dicts())
-    elif campoBuscar == "nombreProducto":
-        query = list(Productos.select().where(Productos.nombreProducto == valor).dicts())
+    elif campoBuscar == "nombre":
+        #query = list(Productos.select().where(Productos.nombreProducto.startswith(valor)).dicts())
+        query = list(Productos.select().where(Productos.nombreProducto.contains(valor)).dicts())
     elif campoBuscar == "cantMin":
         query = list(Productos.select().where(Productos.cantMin == valor).dicts())
     elif campoBuscar == "cantDispo":
@@ -178,11 +199,28 @@ def consultar_productos(campoBuscar="", valor=""):
 
 def consultar_producto(idProducto):
     #print("entro consultar_producto: ", idProducto)
-    #print("esta aqui")
-    datosProducto = list(Productos.select().where(Productos.idProducto == idProducto).dicts())
+    
+    #datosProducto = list(Productos.select().where(Productos.idProducto == idProducto).dicts())
+    datosProducto = list(Productos.select().where(Productos.idProducto == idProducto))
+    
+    for producto in datosProducto:
     #print("datosProducto[0]:",datosProducto[0])
-    producto = Productos(datosProducto[0])
+        #producto = Productos(datosProducto[0])
     #print("producto:",producto)
+        print(producto)
+        return producto
+
+def consultar_producto_eli(idProducto):
+    print("entro consultar_producto_eli: ", idProducto)
+    
+    datosProducto = list(Productos.select().where(Productos.idProducto == idProducto))
+    
+    #producto = Productos(datosProducto[0])
+    for item in datosProducto:
+    #     for item in query:
+        producto = model_to_dict(item)
+    ##producto = Productos(datosProducto[0])
+    print("producto:",producto)
     return producto
 
 def insertar_producto(datosProducto):
@@ -194,6 +232,7 @@ def insertar_producto(datosProducto):
     return rta
     
 def actualizar_producto(idProducto, datosProducto):
+    
     try:
         rta = Productos.update(**datosProducto).where(Productos.idProducto == idProducto).execute()
     except:

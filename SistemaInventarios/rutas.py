@@ -10,14 +10,16 @@ from SistemaInventarios.config import dev2
 import SistemaInventarios.crud as crud
 #from SistemaInventarios import serverFlask
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 appDash.server.config.from_object(dev2)
 
 
 bd.init_app(appDash.server)
 
+
 def miFlash(mensaje):
     flash(mensaje+". ")
-
 
 def opcBusquedaHTML(listBusqueda, campoSelec=""):
     opciones = ""
@@ -114,7 +116,7 @@ def cerrarSesion():
     return redirect("/index")
 
 
-@appDash.server.route('/validarLogin', methods=['POST'])
+@appDash.server.route('/validarLogin', methods=('POST','GET'))
 def validarLogin():
     global usuarios
     if request.method == 'POST':
@@ -132,7 +134,11 @@ def validarLogin():
             session['clave'] = datUsuario['clave']
             session['tipoUsuario'] = datUsuario['tipoUsuario']
         """        
-        if usuario != None and usuario.clave == password:
+        print("usuario.clave:","pbkdf2:sha256:"+usuario.clave)
+        print("generate_password_hash(password):",generate_password_hash(password))
+
+        #if usuario != None and usuario.clave == password:
+        if usuario != None and check_password_hash("pbkdf2:sha256:"+usuario.clave, password):
             session['idUsuario'] = usuario.idUsuario
             session['usuario'] = usuario.usuario
             session['clave'] = usuario.clave
@@ -260,6 +266,7 @@ def ajaxUsuarioMod():
         else:
             #usuario = db.buscarUsuario(idUsuario)
             usuario = crud.consultar_usuario(idUsuario=idUsuario)
+            usuario.clave = ""
             #
             if usuario.tipoUsuario == "UsuarioFinal":
                 usuario.tipoUsuario1 = "selected"
@@ -325,11 +332,18 @@ def modificarUsuarios():
             'direccion': request.form['direccion'],
             'tipoUsuario': request.form['tipoUsuario'],
             'estado': request.form['estado'],
-            'clave': request.form['clave'],
+            'clave': request.form['clave'].strip(),
             'cambiarClave': ("1" if 'cambiarClave' in request.form else "0"),
             'idUsuarioCrea_id': idUsuarioLogin,
             'idUsuarioEdita_id': idUsuarioLogin,
         }
+        if len(datosUsuario['clave']) > 0:
+            # Si digito una clave se encripta.
+            datosUsuario['clave'] = generate_password_hash(datosUsuario['clave']).split(":")[2]
+        else:
+            # No digito clave se quita el campo para que no lo actualice.
+            datosUsuario.pop("clave")
+
         usuario = crud.Usuario(datosUsuario)
         #print("modificar usuario.idUsuario:",usuario.idUsuario)
         # Quitar la llave para que no se actualice.
@@ -526,6 +540,9 @@ def ajaxProveedorEli():
         return redirect("/proveedores")
 
 
+
+
+
 @appDash.server.route('/buscarProveedores', methods=['POST'])
 def buscarproveedores():
     global listaBusquedaProveedores, opcionesProveedores, cabeceraProv
@@ -536,10 +553,12 @@ def buscarproveedores():
         db.fijar_permisosUsuario(tipoUsuario)
         opcMenu = opcMenuHTML(db.permisosUsuario)
         campoBuscar = request.form['select']
-        texto = request.form['text'].upper().strip()
+        #texto = request.form['text'].upper().strip()
+        texto = request.form['text'].strip()
         tipoBusqueda = listaBusquedaProveedores[campoBuscar][1]
 
-        
+        print("Campo Buscar :" ,campoBuscar)
+        print("campo len texto :",len(texto))
 
         if len(texto) > 0:
             """
@@ -548,7 +567,7 @@ def buscarproveedores():
             else:
                 listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProveedores))
             """
-            listRta = crud.consultar_proveedores()
+            listRta = crud.consultar_proveedores(campoBuscar, texto)
         else:
             #listRta = list(db.datosProveedores)
             listRta = crud.consultar_proveedores()
@@ -579,6 +598,7 @@ def modificarProveedor():
         idUsuarioLogin = session['idUsuario']
         usuario = session['usuario']
         tipoUsuario = session['tipoUsuario']
+        
         db.fijar_permisosUsuario(tipoUsuario)
         opcMenu = opcMenuHTML(db.permisosUsuario)
         datosProveedor = {
@@ -737,17 +757,18 @@ def productos():
 
 @appDash.server.route('/ajaxProductoMod', methods=['POST'])
 def ajaxProductoMod():
+    print("aqui")
     global opcionesProductos, cabeceraProd
     if "usuario" in session and request.method == 'POST':
         idProducto = int(request.form['id'])
-        if idProducto == "0":
+        if idProducto == 0:
             # Crear producto
             # db.maxIdProducto+=1
             datosProducto = {
                 "idProducto": 0,
+                "codigo": "",
                 "nombreProducto": "",
                 "cantMin": "",
-                "cantBodega": "",
                 "cantDispo": "",
                 "estado": "Activo",
             }
@@ -769,17 +790,23 @@ def ajaxProductoMod():
         return redirect("/productos")
 
 
+
+
+
 @appDash.server.route('/ajaxProductoEli', methods=['POST'])
 def ajaxProductoEli():
     global opcionesProductos, cabeceraProd
    
     if "usuario" in session and request.method == 'POST':
-        idProducto = request.form['id']
-        producto = crud.consultar_producto(idProducto)
+        idProducto = int(request.form['id'])
+        print("idProducto :",idProducto)
+        producto = crud.consultar_producto_eli(idProducto)
+        print("ajax_wli :",idProducto)
         rtaHTML = render_template('eliProducto.html',infoProducto=producto)
         return jsonify({'htmlresponse': rtaHTML})
     else:
         return redirect("/productos")
+
 
 
 @appDash.server.route('/buscarProductos', methods=['POST'])
@@ -792,7 +819,8 @@ def buscarProductos(): #JMSS
         db.fijar_permisosUsuario(tipoUsuario)
         opcMenu = opcMenuHTML(db.permisosUsuario)
         campoBuscar = request.form['select']
-        texto = request.form['text'].upper().strip()
+        #texto = request.form['text'].upper().strip()
+        texto = request.form['text'].strip()
         tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
 
 
@@ -804,7 +832,7 @@ def buscarProductos(): #JMSS
             else:
                 listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProveedores))
             """
-            listRta = crud.consultar_productos()
+            listRta = crud.consultar_productos(campoBuscar, texto)
         else:
             #listRta = list(db.datosProveedores)
             listRta = crud.consultar_productos()
@@ -859,14 +887,16 @@ def modificarProducto(): #JMSS
         idUsuarioLogin = session['idUsuario']
         usuario = session['usuario']
         tipoUsuario = session['tipoUsuario']
+        
         db.fijar_permisosUsuario(tipoUsuario)
         opcMenu = opcMenuHTML(db.permisosUsuario)
         datosProducto = {
-            'idProducto': request.form['idProducto'],
-            'nombre': request.form['nombre'],
+            'idProducto': int(request.form['idProducto']),
+            'codigo' : request.form['codigo'],
+            'nombreProducto': request.form['nombre'],
             'cantMin': request.form['cantMin'],
-            'cantBodega': request.form['cantBodega'],
-            'descripcion': request.form['descripcion'],
+            'cantDispo': request.form['cantDispo'],
+            # 'descripcion': request.form['descripcion'],
             'estado': request.form['estado'],
             'idUsuarioCrea_id': idUsuarioLogin,
             'idUsuarioEdita_id': idUsuarioLogin,
@@ -885,7 +915,7 @@ def modificarProducto(): #JMSS
             if rta > 0:
                 miFlash("Se inserto un registro")
             else:
-                miFlash("Fallo la creacion del registro")
+                miFlash("1. Fallo la creacion del registro")
             #print("rta.insert:",rta)
         else:
             # Quitar idUsuarioCrea_id para que no se actualice cuando el registro ya exite.
@@ -894,7 +924,7 @@ def modificarProducto(): #JMSS
             if rta == 1:
                 miFlash("Registro Actualizado")
             else:
-                miFlash("Fallo la actualización del registro")
+                miFlash("2. Fallo la actualización del registro")
             #print("rta.update:",rta)
 
         # cargar datos de busqueda desde las cookies.
@@ -904,7 +934,7 @@ def modificarProducto(): #JMSS
             tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
         else:
             campoBuscar = "nombre"
-            texto = datosProducto['nombre']
+            texto = datosProducto['nombreProducto']
             tipoBusqueda = "=="
         ## fin nuevo ##
 
@@ -935,54 +965,18 @@ def modificarProducto(): #JMSS
 
 
 
-
-
-
-    #     producto = db.Producto(datosProducto)
-    #     rta = db.actualizarProducto(producto)
-        
-    #     if rta == 1:
-    #         miFlash("Se inserto un registro")
-    #     else:
-    #         miFlash("Registro Actualizado")
-
-    #     campoBuscar = session['campoBuscarProd']
-    #     texto = session['textoBuscarProd']
-    #     tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
-
-    #     if len(texto) > 0:
-    #         if tipoBusqueda == "==":
-    #             listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProductos))
-    #         else:
-    #             listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProductos))
-    #     else:
-    #         listRta = list(db.datosProductos)
-
-    #     if len(listRta) > 0:
-    #         opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
-    #         rtaHTML = render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, data=listRta, title="Productos", usuario=usuario,infoUser = (usuario+" - "+tipoUsuario), opcMenu=opcMenu)
-    #     else:
-    #         opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
-    #         rtaHTML = render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, title="Productos", usuario=usuario,infoUser = (usuario+" - "+tipoUsuario), opcMenu=opcMenu)
-
-    #     return rtaHTML
-
-    # else:
-    #     return redirect("/productos")
-
-
 @appDash.server.route('/eliminarProducto', methods=['POST'])
 def eliminarProducto(): #JMSS
     global opcionesProductos, cabeceraProd
-  
+    print("entro /eliminarProducto")
     if "usuario" in session and request.method == 'POST':
         usuario = session['usuario']
         tipoUsuario = session['tipoUsuario']
         db.fijar_permisosUsuario(tipoUsuario)
         opcMenu = opcMenuHTML(db.permisosUsuario)
-        idProducto= request.form['idProducto']
+        idProducto= int(request.form['idProducto'])
         sino= request.form['sino']
-
+        print("idProducto:", idProducto, "sino: ", sino)
 
         if sino == "Si":
 

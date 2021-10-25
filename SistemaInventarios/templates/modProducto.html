@@ -2,8 +2,13 @@
 <form action="/modificarProducto" method="POST" class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form-1" style="padding: 10px;" redirect="true">
   <input type="hidden" id="idProducto" name="idProducto" value="{{r.idProducto}}" >
   <div class="u-form-group u-form-name">
+    <label for="name-7821" class="u-label">Codigo</label>
+    <input type="text" placeholder="codigo" id="name-7821" name="codigo" value="{{r.codigo}}"class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="" value="{{r.codigo}}">
+  
+  </div>
+  <div class="u-form-group u-form-name">
     <label for="name-7821" class="u-label">Nombre</label>
-    <input type="text" placeholder="nombre" id="name-7821" name="nombre" value="{{r.nombre}}"class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="" value="{{r.nombreProducto}}">
+    <input type="text" placeholder="nombre" id="name-7821" name="nombre" value="{{r.nombreProducto}}"class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="" value="{{r.nombreProducto}}">
   
   </div>
   <div class="u-form-group u-form-group-2">
@@ -12,12 +17,12 @@
   </div>
   <div class="u-form-group u-form-group-3">
     <label for="text-67ca" class="u-label">Cantidad en Bodega</label>
-    <input type="text" placeholder="cantBodega" id="text-67ca" name="cantBodega" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.cantDispo}}">
+    <input type="text" placeholder="cantDispo" id="text-67ca" name="cantDispo" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.cantDispo}}">
   </div>
-  <div class="u-form-group u-form-group-4">
+  <!-- <div class="u-form-group u-form-group-4">
     <label for="text-39ac" class="u-label">Descripción</label>
     <input type="text" placeholder="descripcion" id="text-39ac" name="descripcion" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.descripcion}}">
-  </div>
+  </div> -->
   
   <div class="u-form-group u-form-select u-form-group-6">
     <label for="select-f7cf" class="u-label">Estado</label>
