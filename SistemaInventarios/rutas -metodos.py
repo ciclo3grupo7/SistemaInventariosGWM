@@ -64,7 +64,7 @@ cabeceraUsuar = ("Usuario","Nombre","Perfil","Estado","acciones")
 
 
 # Interacción de Productos
-cabeceraProd = ("Identificador","Nombre"," Cantidad Minima","Cantidad Disponible","Estado","acciones")
+cabeceraProd = ("Identificador","Nombre"," Cantidad Minima","Cantidad Disponible","Descripcion","Estado","acciones")
 
 listaBusquedaUsuarios = {
     "usuario": ["Usuario","=="],
@@ -99,13 +99,13 @@ def index():
     return redirect("/index")
 
 
-@appDash.server.route('/index', methods=['GET'])
+@appDash.server.route('/index', methods=('GET', 'POST'))
 def login():
     rtaHTML = make_response(render_template("index.html"))
     return rtaHTML
 
 
-@appDash.server.route('/cerrarSesion', methods=['GET'])
+@appDash.server.route('/cerrarSesion', methods=('GET', 'POST'))
 def cerrarSesion():
     # Borra las variables de sesión creadas
     session.clear()
@@ -114,7 +114,7 @@ def cerrarSesion():
     return redirect("/index")
 
 
-@appDash.server.route('/validarLogin', methods=['POST'])
+@appDash.server.route('/validarLogin', methods=('GET', 'POST'))
 def validarLogin():
     global usuarios
     if request.method == 'POST':
@@ -164,7 +164,7 @@ def inicio():
 
 
 #LOGICA USUARIOS
-@appDash.server.route('/usuarios', methods=['GET'])
+@appDash.server.route('/usuarios', methods=('GET','POST'))
 def usuarios():
     global opcionesUsuarios, cabeceraUsuar
     
@@ -186,7 +186,7 @@ def usuarios():
 
 
 
-@appDash.server.route('/buscarUsuarios', methods=['POST'])
+@appDash.server.route('/buscarUsuarios', methods=('GET','POST'))
 def buscarUsuarios():
     #JHMO
     global listaBusquedaUsuarios, opcionesUsuarios, cabeceraUsuar
@@ -232,7 +232,7 @@ def buscarUsuarios():
         return redirect("/usuarios")
 
 
-@appDash.server.route('/ajaxUsuarioMod', methods=['POST'])
+@appDash.server.route('/ajaxUsuarioMod', methods=('GET','POST'))
 def ajaxUsuarioMod():
     global opcionesUsuarios, cabeceraUsuar
     if "usuario" in session and request.method == 'POST':
@@ -285,7 +285,7 @@ def ajaxUsuarioMod():
         return redirect("/usuarios")
  
 
-@appDash.server.route('/ajaxUsuarioEli', methods=['POST'])
+@appDash.server.route('/ajaxUsuarioEli', methods=('GET','POST'))
 def ajaxUsuarioEli():
     global opcionesUsuarios, cabeceraUsuar
     #print("entro /ajaxUsuarioEli")
@@ -303,7 +303,7 @@ def ajaxUsuarioEli():
 
 
 
-@appDash.server.route('/modificarUsuarios', methods=['POST'])
+@appDash.server.route('/modificarUsuarios', methods=('GET','POST'))
 def modificarUsuarios():
     global opcionesUsuarios, cabeceraUsuar
     #print("entro /modificarUsuarios")
@@ -380,11 +380,11 @@ def modificarUsuarios():
         if len(listRta) > 0:
             #miFlash("Datos Encontrados")
             opciones = opcBusquedaHTML(listaBusquedaUsuarios, campoBuscar)
-            rtaHTML = render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones, data=listRta, title="Usuarios", usuario=usuarioLogin, infoUser = (usuarioLogin+" - "+tipoUsuario), opcMenu=opcMenu)
+            rtaHTML = render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones, data=listRta, title="Usuarios", usuario=usuarioLogin, infoUser = (usuario+" - "+tipoUsuario), opcMenu=opcMenu)
         else:
             #miFlash("Datos No Encontrados")
             opciones = opcBusquedaHTML(listaBusquedaUsuarios, campoBuscar)
-            rtaHTML = render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones, title="Usuarios", usuario=usuarioLogin, infoUser = (usuarioLogin+" - "+tipoUsuario), opcMenu=opcMenu)
+            rtaHTML = render_template("Usuarios.html", headings=cabeceraUsuar, opcBusqueda=opciones, title="Usuarios", usuario=usuarioLogin, infoUser = (usuario+" - "+tipoUsuario), opcMenu=opcMenu)
 
         return rtaHTML
 
@@ -392,7 +392,7 @@ def modificarUsuarios():
         return redirect("/usuarios")
 
 
-@appDash.server.route('/eliminarUsuario', methods=['POST'])
+@appDash.server.route('/eliminarUsuario', methods=('GET','POST'))
 def eliminarUsuario():
     global opcionesUsuarios, cabeceraUsuar
     #print("entro /eliminarUsuario")
@@ -452,7 +452,7 @@ def eliminarUsuario():
 
 #LOGICA PROVEEDORES
 
-@appDash.server.route('/proveedores', methods=['GET'])
+@appDash.server.route('/proveedores', methods=('GET','POST'))
 def proveedores():
     global opcionesProveedores, cabeceraProv
     if "usuario" in session and "ver" in db.permisosUsuario["Proveedores"]:
@@ -472,7 +472,7 @@ def proveedores():
         return redirect("/index")
 
 
-@appDash.server.route('/ajaxProveedorMod', methods=['POST'])
+@appDash.server.route('/ajaxProveedorMod', methods=('GET','POST'))
 def ajaxProveedorMod():
     global opcionesProveedores, cabeceraProv
     if "usuario" in session and request.method == 'POST':
@@ -510,7 +510,7 @@ def ajaxProveedorMod():
         return redirect("/proveedores")
 
 
-@appDash.server.route('/ajaxProveedorEli', methods=['POST'])
+@appDash.server.route('/ajaxProveedorEli', methods=('GET','POST'))
 def ajaxProveedorEli():
     global opcionesProveedores, cabeceraProv
 
@@ -526,7 +526,7 @@ def ajaxProveedorEli():
         return redirect("/proveedores")
 
 
-@appDash.server.route('/buscarProveedores', methods=['POST'])
+@appDash.server.route('/buscarProveedores', methods=('GET','POST'))
 def buscarproveedores():
     global listaBusquedaProveedores, opcionesProveedores, cabeceraProv
 
@@ -571,7 +571,7 @@ def buscarproveedores():
 
 
 
-@appDash.server.route('/modificarProveedor', methods=['POST'])
+@appDash.server.route('/modificarProveedor', methods=('GET','POST'))
 def modificarProveedor():
     global opcionesProveedores, cabeceraProv
     if "usuario" in session and request.method == 'POST':
@@ -656,7 +656,7 @@ def modificarProveedor():
 
 
 
-@appDash.server.route('/eliminarProveedor', methods=['POST'])
+@appDash.server.route('/eliminarProveedor', methods=('GET','POST'))
 def eliminarProveedor():
     global opcionesProveedores, cabeceraProv
   
@@ -716,7 +716,7 @@ def eliminarProveedor():
 
 #LOGICA PRODUCTOS
 
-@appDash.server.route('/productos', methods=['GET'])
+@appDash.server.route('/productos', methods=('GET','POST'))
 def productos():
     global opcionesProductos, cabeceraProd
     if "usuario" in session and "ver" in db.permisosUsuario["Productos"]:
@@ -735,27 +735,27 @@ def productos():
         return redirect("/index")
 
 
-@appDash.server.route('/ajaxProductoMod', methods=['POST'])
+@appDash.server.route('/ajaxProductoMod', methods=('GET','POST'))
 def ajaxProductoMod():
     global opcionesProductos, cabeceraProd
     if "usuario" in session and request.method == 'POST':
-        idProducto = int(request.form['id'])
+        idProducto = request.form['id']
         if idProducto == "0":
             # Crear producto
-            # db.maxIdProducto+=1
-            datosProducto = {
-                "idProducto": 0,
-                "nombreProducto": "",
+            db.maxIdProducto+=1
+            datosProveedor = {
+                "idProducto": str(db.maxIdProveedor),
+                "nombre": "",
                 "cantMin": "",
                 "cantBodega": "",
-                "cantDispo": "",
+                "descripcion": "",
                 "estado": "Activo",
             }
 
-            producto = crud.Producto(datosProducto)
+            producto = db.Producto(datosProveedor)
 
         else:
-            producto = crud.consultar_producto(idProducto)
+            producto = db.buscarProducto(idProducto)
         
         if producto.estado == "Activo":
             producto.estado1 = "selected"
@@ -769,22 +769,22 @@ def ajaxProductoMod():
         return redirect("/productos")
 
 
-@appDash.server.route('/ajaxProductoEli', methods=['POST'])
+@appDash.server.route('/ajaxProductoEli', methods=('GET','POST'))
 def ajaxProductoEli():
     global opcionesProductos, cabeceraProd
    
     if "usuario" in session and request.method == 'POST':
         idProducto = request.form['id']
-        producto = crud.consultar_producto(idProducto)
+        producto = db.buscarProducto(idProducto)
         rtaHTML = render_template('eliProducto.html',infoProducto=producto)
         return jsonify({'htmlresponse': rtaHTML})
     else:
         return redirect("/productos")
 
 
-@appDash.server.route('/buscarProductos', methods=['POST'])
-def buscarProductos(): #JMSS
-    global listaBusquedaProductos, opcionesProductos, cabeceraProd
+@appDash.server.route('/buscarProductos', methods=('GET','POST'))
+def buscarProductos():
+    global listaBusquedaProductos, opcionesProveedores, cabeceraProd
 
     if "usuario" in session and request.method == 'POST':
         usuario = session['usuario']
@@ -795,24 +795,18 @@ def buscarProductos(): #JMSS
         texto = request.form['text'].upper().strip()
         tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
 
-
-
         if len(texto) > 0:
-            """
             if tipoBusqueda == "==":
-                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProveedores))
+                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProductos))
             else:
-                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProveedores))
-            """
-            listRta = crud.consultar_productos()
+                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProductos))
         else:
-            #listRta = list(db.datosProveedores)
-            listRta = crud.consultar_productos()
+            listRta = list(db.datosProductos)
         
         if len(listRta) > 0:
             miFlash("Datos Encontrados")
             opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
-            rtaHTML = make_response(render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, data=listRta, title="Productos", usuario=usuario, infoUser = (usuario+" - "+tipoUsuario),opcMenu=opcMenu))        
+            rtaHTML = make_response(render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, data=listRta, title="Productos", usuario=usuario, infoUser = (usuario+" - "+tipoUsuario),opcMenu=opcMenu))
         else:
             miFlash("Datos No Encontrados")
             opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
@@ -820,43 +814,18 @@ def buscarProductos(): #JMSS
 
         session['campoBuscarProd'] = campoBuscar
         session['textoBuscarProd'] = texto
-
         return rtaHTML
+
     else:
         return redirect("/productos")
 
-    #     if len(texto) > 0:
-    #         if tipoBusqueda == "==":
-    #             listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProductos))
-    #         else:
-    #             listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProductos))
-    #     else:
-    #         listRta = list(db.datosProductos)
-        
-    #     if len(listRta) > 0:
-    #         miFlash("Datos Encontrados")
-    #         opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
-    #         rtaHTML = make_response(render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, data=listRta, title="Productos", usuario=usuario, infoUser = (usuario+" - "+tipoUsuario),opcMenu=opcMenu))
-    #     else:
-    #         miFlash("Datos No Encontrados")
-    #         opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
-    #         rtaHTML = make_response(render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, title="Productos", usuario=usuario,infoUser = (usuario+" - "+tipoUsuario), opcMenu=opcMenu))
-
-    #     session['campoBuscarProd'] = campoBuscar
-    #     session['textoBuscarProd'] = texto
-    #     return rtaHTML
-
-    # else:
-    #     return redirect("/productos")
 
 
-
-@appDash.server.route('/modificarProducto', methods=['POST'])
-def modificarProducto(): #JMSS
+@appDash.server.route('/modificarProducto', methods=('GET','POST'))
+def modificarProducto():
     global opcionesProductos, cabeceraProd
    
     if "usuario" in session and request.method == 'POST':
-        idUsuarioLogin = session['idUsuario']
         usuario = session['usuario']
         tipoUsuario = session['tipoUsuario']
         db.fijar_permisosUsuario(tipoUsuario)
@@ -868,57 +837,27 @@ def modificarProducto(): #JMSS
             'cantBodega': request.form['cantBodega'],
             'descripcion': request.form['descripcion'],
             'estado': request.form['estado'],
-            'idUsuarioCrea_id': idUsuarioLogin,
-            'idUsuarioEdita_id': idUsuarioLogin,
             
         }
-
-        ## inicia nuevo
-        producto = crud.Producto(datosProducto)
-        datosProducto.pop("idProducto")
-        #print("proveedor.idProveedor:",proveedor.idProveedor)
-
-        if producto.idProducto == 0:
-            # Registro nuevo
-            rta = crud.insertar_producto(datosProducto)
-            #print("rta :",rta)
-            if rta > 0:
-                miFlash("Se inserto un registro")
-            else:
-                miFlash("Fallo la creacion del registro")
-            #print("rta.insert:",rta)
+        producto = db.Producto(datosProducto)
+        rta = db.actualizarProducto(producto)
+        
+        if rta == 1:
+            miFlash("Se inserto un registro")
         else:
-            # Quitar idUsuarioCrea_id para que no se actualice cuando el registro ya exite.
-            datosProducto.pop("idUsuarioCrea_id")
-            rta = crud.actualizar_producto(producto.idProducto, datosProducto)
-            if rta == 1:
-                miFlash("Registro Actualizado")
-            else:
-                miFlash("Fallo la actualización del registro")
-            #print("rta.update:",rta)
+            miFlash("Registro Actualizado")
 
-        # cargar datos de busqueda desde las cookies.
-        if 'campoBuscarProd' in session:
-            campoBuscar = session['campoBuscarProd']
-            texto = session['textoBuscarProd']
-            tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
-        else:
-            campoBuscar = "nombre"
-            texto = datosProducto['nombre']
-            tipoBusqueda = "=="
-        ## fin nuevo ##
+        campoBuscar = session['campoBuscarProd']
+        texto = session['textoBuscarProd']
+        tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
 
         if len(texto) > 0:
-            """
             if tipoBusqueda == "==":
-                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProducto))
+                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProductos))
             else:
-                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProducto))
-            """
-            listRta = crud.consultar_productos(campoBuscar, texto)
+                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProductos))
         else:
-            #listRta = list(db.datosProducto)
-            listRta = crud.consultar_productos()
+            listRta = list(db.datosProductos)
 
         if len(listRta) > 0:
             opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
@@ -933,46 +872,8 @@ def modificarProducto(): #JMSS
         return redirect("/productos")
 
 
-
-
-
-
-
-    #     producto = db.Producto(datosProducto)
-    #     rta = db.actualizarProducto(producto)
-        
-    #     if rta == 1:
-    #         miFlash("Se inserto un registro")
-    #     else:
-    #         miFlash("Registro Actualizado")
-
-    #     campoBuscar = session['campoBuscarProd']
-    #     texto = session['textoBuscarProd']
-    #     tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
-
-    #     if len(texto) > 0:
-    #         if tipoBusqueda == "==":
-    #             listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProductos))
-    #         else:
-    #             listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProductos))
-    #     else:
-    #         listRta = list(db.datosProductos)
-
-    #     if len(listRta) > 0:
-    #         opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
-    #         rtaHTML = render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, data=listRta, title="Productos", usuario=usuario,infoUser = (usuario+" - "+tipoUsuario), opcMenu=opcMenu)
-    #     else:
-    #         opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
-    #         rtaHTML = render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, title="Productos", usuario=usuario,infoUser = (usuario+" - "+tipoUsuario), opcMenu=opcMenu)
-
-    #     return rtaHTML
-
-    # else:
-    #     return redirect("/productos")
-
-
-@appDash.server.route('/eliminarProducto', methods=['POST'])
-def eliminarProducto(): #JMSS
+@appDash.server.route('/eliminarProducto', methods=('GET','POST'))
+def eliminarProducto():
     global opcionesProductos, cabeceraProd
   
     if "usuario" in session and request.method == 'POST':
@@ -983,11 +884,8 @@ def eliminarProducto(): #JMSS
         idProducto= request.form['idProducto']
         sino= request.form['sino']
 
-
         if sino == "Si":
-
-            #rta = db.eliminar_producto(idProducto)
-            rta = crud.eliminar_producto(idProducto)
+            rta = db.eliminarProducto(idProducto)
             
             if rta == 1:
                 miFlash("Registro Eliminado")
@@ -1000,16 +898,12 @@ def eliminarProducto(): #JMSS
         tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
 
         if len(texto) > 0:
-            """"
             if tipoBusqueda == "==":
-                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProveedores))
+                listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProductos))
             else:
-                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProveedores))
-            """
-            listRta = crud.consultar_productos(campoBuscar, texto)
+                listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProductos))
         else:
-            #listRta = list(db.datosProveedores)
-            listRta = crud.consultar_productos()
+            listRta = list(db.datosProductos)
 
         if len(listRta) > 0:
             opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
@@ -1022,39 +916,6 @@ def eliminarProducto(): #JMSS
 
     else:
         return redirect("/productos")
-
-    #     if sino == "Si":
-    #         rta = db.eliminarProducto(idProducto)
-            
-    #         if rta == 1:
-    #             miFlash("Registro Eliminado")
-    #         else:
-    #             miFlash("Registro NO encontrado")
-
-    #     # cargar datos de busqueda desde las cookies.
-    #     campoBuscar = session['campoBuscarProd']
-    #     texto = session['textoBuscarProd']
-    #     tipoBusqueda = listaBusquedaProductos[campoBuscar][1]
-
-    #     if len(texto) > 0:
-    #         if tipoBusqueda == "==":
-    #             listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosProductos))
-    #         else:
-    #             listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosProductos))
-    #     else:
-    #         listRta = list(db.datosProductos)
-
-    #     if len(listRta) > 0:
-    #         opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
-    #         rtaHTML = render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, data=listRta, title="Productos", usuario=usuario, opcMenu=opcMenu)
-    #     else:
-    #         opciones = opcBusquedaHTML(listaBusquedaProductos, campoBuscar)
-    #         rtaHTML = render_template("Productos.html", headings=cabeceraProd, opcBusqueda=opciones, title="Productos", usuario=usuario, opcMenu=opcMenu)
-
-    #     return rtaHTML
-
-    # else:
-    #     return redirect("/productos")
 
 
 @appDash.server.route('/dashboard', methods=('GET',))
@@ -1081,3 +942,72 @@ def dashboard():
 # if __name__=='__main__':
 #    appDash.run(debug=True)
 
+
+## cambio en buscarproductos
+        # if len(texto) > 0:
+        #     """
+        #     if tipoBusqueda == "==":
+        #         listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosUsuarios))
+        #     else:
+        #         listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosUsuarios))
+        #     """
+        #     listRta = crud.consultar_usuarios(campoBuscar, texto)
+        # else:
+        #     #listRta = list(db.datosUsuarios)
+        #     listRta = crud.consultar_usuarios()
+        #     # listRta es un arreglo de diccionarios extraidos de db.datosUsuarios
+        #     #print("listRta:",listRta)
+
+        # else:
+        #     #listRta = list(db.datosUsuarios)
+        #     listRta = crud.consultar_usuarios()
+        ##
+
+
+## cambio en modificarproductos
+
+        # ##
+        # ## inicia nuevo
+        # proveedor = crud.Proveedor(datosProveedor)
+        # datosProveedor.pop("idProveedor")
+        
+
+        # if proveedor.idProveedor == 0:
+        #     # Registro nuevo
+        #     rta = crud.insertar_proveedor(datosProveedor)
+        #     print("rta :",rta)
+        #     if rta > 0:
+        #         miFlash("Se inserto un registro")
+        #     else:
+        #         miFlash("Fallo la creacion del registro")
+        #     #print("rta.insert:",rta)
+        # else:
+        #     rta = crud.actualizar_proveedor(proveedor.idProveedor, datosProveedor)
+        #     if rta == 1:
+        #         miFlash("Registro Actualizado")
+        #     else:
+        #         miFlash("Fallo la actualización del registro")
+        #     #print("rta.update:",rta)
+
+        # # cargar datos de busqueda desde las cookies.
+        # if 'campoBuscarProv' in session:
+        #     campoBuscar = session['campoBuscarProv']
+        #     texto = session['textoBuscarProv']
+        #     tipoBusqueda = listaBusquedaProveedores[campoBuscar][1]
+        # else:
+        #     campoBuscar = "nombre"
+        #     texto = datosProveedor['nombre']
+        #     tipoBusqueda = "=="
+        # ## fin nuevo ##
+
+        # if len(texto) > 0:
+        #     """
+        #     if tipoBusqueda == "==":
+        #         listRta = list(filter(lambda item: item[campoBuscar].upper() == texto, db.datosUsuarios))
+        #     else:
+        #         listRta = list(filter(lambda item: texto in item[campoBuscar].upper(), db.datosUsuarios))
+        #     """
+        #     listRta = crud.consultar_proveedores(campoBuscar, texto)
+        # else:
+        #     #listRta = list(db.datosUsuarios)
+        #     listRta = crud.consultar_proveedores()

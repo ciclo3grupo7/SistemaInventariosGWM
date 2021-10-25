@@ -1,0 +1,42 @@
+{% with r = infoProducto %}
+<form action="/modificarProducto" method="POST" class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form-1" style="padding: 10px;" redirect="true">
+  <input type="hidden" id="idProducto" name="idProducto" value="{{r.idProducto}}" >
+  <div class="u-form-group u-form-name">
+    <label for="name-7821" class="u-label">Nombre</label>
+    <input type="text" placeholder="nombre" id="name-7821" name="nombre" value="{{r.nombre}}"class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="" value="{{r.nombreProducto}}">
+  
+  </div>
+  <div class="u-form-group u-form-group-2">
+    <label for="text-efd6" class="u-label">Cantidad Minima</label>
+    <input type="text" placeholder="Cantidad Minima" id="text-efd6" name="cantMin" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.cantMin}}">
+  </div>
+  <div class="u-form-group u-form-group-3">
+    <label for="text-67ca" class="u-label">Cantidad en Bodega</label>
+    <input type="text" placeholder="cantBodega" id="text-67ca" name="cantBodega" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.cantDispo}}">
+  </div>
+  <div class="u-form-group u-form-group-4">
+    <label for="text-39ac" class="u-label">Descripción</label>
+    <input type="text" placeholder="descripcion" id="text-39ac" name="descripcion" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.descripcion}}">
+  </div>
+  
+  <div class="u-form-group u-form-select u-form-group-6">
+    <label for="select-f7cf" class="u-label">Estado</label>
+    <div class="u-form-select-wrapper">
+      <select id="select-f7cf" name="estado" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" >
+       
+        <option value="Activo" {{r.estado1}}>Activo</option>
+        <option value="Inactivo" {{r.estado2}}>Inactivo</option>
+      </select>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1" class="u-caret"><path fill="currentColor" d="M4 8L0 4h8z"></path></svg>
+    </div>
+  </div>
+  <div class="u-align-right u-form-group u-form-submit">
+    <button type="submit" value="Guardar" class="u-btn u-btn-submit u-button-style u-btn-1 u-btn-round u-radius-50">Guardar</button>
+   <!-- <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1">Enviar</a>
+    <input type="submit" value="submit" class="u-form-control-hidden">-->
+  </div>
+  <div class="u-form-send-message u-form-send-success"> Gracias! Tu mensaje ha sido enviado. </div>
+  <div class="u-form-send-error u-form-send-message">No se puede enviar su mensaje. Por favor, corrija los errores y vuelva a intentarlo.</div>
+  <input type="hidden" value="" name="recaptchaResponse">
+</form>
+{% endwith %}

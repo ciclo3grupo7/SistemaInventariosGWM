@@ -1,0 +1,45 @@
+{% with r = infoProveedor %}
+<form action="/modificarProveedor" method="POST" class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form-1" style="padding: 10px;" redirect="true">
+  <input type="hidden" id="idProveedor" name="idProveedor" value="{{r.idProveedor}}" >
+  <div class="u-form-group u-form-name">
+    <label for="name-7821" class="u-label">Nit</label>
+    <input type="text" placeholder="Introduzca su nombre" id="name-7821" name="nit" value="{{r.nit}}"class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="" value="{{r.nit}}">
+  
+  </div>
+  <div class="u-form-group u-form-group-2">
+    <label for="text-efd6" class="u-label">Razón Social</label>
+    <input type="text" placeholder="Razón Social" id="text-efd6" name="nombre" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.nombre}}">
+  </div>
+  <div class="u-form-group u-form-group-3">
+    <label for="text-67ca" class="u-label">Dirección</label>
+    <input type="text" placeholder="Dirección" id="text-67ca" name="direccion" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.direccion}}">
+  </div>
+  <div class="u-form-group u-form-group-4">
+    <label for="text-39ac" class="u-label">Teléfono</label>
+    <input type="text" placeholder="Teléfono" id="text-39ac" name="telefono" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.telefono}}">
+  </div>
+  <div class="u-form-email u-form-group u-form-group-5">
+    <label for="email-d318" class="u-label">Correo Corporativo</label>
+    <input type="email" placeholder="Introduzca una dirección de correo electrónico válida" id="email-d318" name="email" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="" value="{{r.email}}">
+  </div>
+  <div class="u-form-group u-form-select u-form-group-6">
+    <label for="select-f7cf" class="u-label">Estado</label>
+    <div class="u-form-select-wrapper">
+      <select id="select-f7cf" name="estado" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" >
+       
+        <option value="Activo" {{r.estado1}}>Activo</option>
+        <option value="Inactivo" {{r.estado2}}>Inactivo</option>
+      </select>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1" class="u-caret"><path fill="currentColor" d="M4 8L0 4h8z"></path></svg>
+    </div>
+  </div>
+  <div class="u-align-right u-form-group u-form-submit">
+    <button type="submit" value="Guardar" class="u-btn u-btn-submit u-button-style u-btn-1 u-btn-round u-radius-50">Guardar</button>
+   <!-- <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1">Enviar</a>
+    <input type="submit" value="submit" class="u-form-control-hidden">-->
+  </div>
+  <div class="u-form-send-message u-form-send-success"> Gracias! Tu mensaje ha sido enviado. </div>
+  <div class="u-form-send-error u-form-send-message">No se puede enviar su mensaje. Por favor, corrija los errores y vuelva a intentarlo.</div>
+  <input type="hidden" value="" name="recaptchaResponse">
+</form>
+{% endwith %}
