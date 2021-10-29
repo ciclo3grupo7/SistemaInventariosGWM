@@ -28,7 +28,7 @@
                       <input type="text" placeholder="Texto A Buscar" id="text-6982" name="text" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white u-input-2">
                     </div>
                     <div class="u-align-right u-form-group u-form-submit">
-                      <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1">Buscar</a>
+                      <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1 u-btn-round u-radius-50 u-palette-1-base">Buscar</a>
                       <input type="submit" value="submit" class="u-form-control-hidden">
                     </div>
                     <div class="u-form-send-message u-form-send-success"> Gracias! Tu mensaje ha sido enviado. </div>
@@ -120,7 +120,6 @@
     
     
     {% block eliminar %}
-
     <div class="modal fade" id="IdModalEliProducto" role="dialog">
       <section class="u-clearfix u-container-style u-section-4">
        <div class="u-container-style u-dialog u-radius-16 u-shape-round u-white u-dialog-1">
@@ -136,22 +135,18 @@
       
     
   {% block editar %}
-    
     <div class="modal fade" id="IdModalModProducto" role="dialog">
-      <section class="u-clearfix u-container-style u-section-5">
-        <div class="u-container-style u-dialog u-radius-30 u-shape-round u-white u-dialog-1">
-          <div class="u-container-layout u-container-layout-1">
-            <h3 class="u-text u-text-1">REGISTRO DE PRODUCTOS</h3>
-              <button type="button" class="close u-dialog-close-button u-icon u-text-grey-40 u-icon-1" data-dismiss="modal"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 16 16" style=""><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-e2c9"></use></svg><svg class="u-svg-content" viewBox="0 0 16 16" x="0px" y="0px" id="svg-e2c9"><rect x="7" y="0" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="2" height="16"></rect><rect x="0" y="7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -3.3138 8.0002)" width="16" height="2"></rect></svg></button>
-                <div class="u-form u-form-1">
-
-                  
-                  <div class="formModalModProducto"></div>
-              </div>
-              <a data-page-id="88368744" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-50 u-btn-2" data-dismiss="modal">CANCELAR</a>
-          </div>
-     </section>
+      <div class="formModalModProducto"></div>
     </div>
+  {% endblock %}
   
-    {% endblock %}
-    
+  {% block estilosModal %}
+  <style>
+  .u-section-5 .u-dialog-1 {
+    width: 1600px;
+    min-height: 826px;
+    margin: 0 auto 60px;
+    }
+  </style>
+  {% endblock %}
+  

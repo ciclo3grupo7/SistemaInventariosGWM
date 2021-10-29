@@ -1,50 +1,57 @@
-import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input, Output
 import plotly.graph_objs as go
+import plotly.express as px
 import pandas as pd
 from flask import render_template
+from SistemaInventarios.modelsDB import *
+import SistemaInventarios.crud as crud
 
 from SistemaInventarios import appDash
 
-#print("Entro dashboard2")
 appDash.index_string = "{%app_entry%} {%config%} {%scripts%} {%renderer%}"
 appDash.layout = html.Div()
 
+dfPieVentas = []
+dfPieCompras = []
+
+
 def dashboard_principal(tipoUsuario, usuario, infoUser, opcMenu):
-    #print("entro a dashboard_principal()")
-    data = pd.read_csv("avocado.csv")
-    #print("data1:",data)
-    data = data.query("type == 'conventional' and region == 'Albany'")
-    #print("data2:",data)
-    data["Date"] = pd.to_datetime(data["Date"], format="%Y-%m-%d")
-    data.sort_values("Date", inplace=True)
-    #print("data3:",data)
+    global dfPieVentas, dfPieCompras
 
-    ## Importar la data 2
-    df = pd.read_csv('data.csv', delimiter = ';')
+    dfPieVentas = pd.DataFrame(crud.consultar_ventas_agrupada())
+    dfPieCompras = pd.DataFrame(crud.consultar_compras_agrupada())
+
+    dfLinVentas =  pd.DataFrame(crud.consultar_ventas_agrupada())
+    dfLinCompras =  pd.DataFrame(crud.consultar_compras_agrupada())
+
+    ## Importar la data barras 1
+    df1 = pd.DataFrame(crud.consultar_nivelStock())
+
     #Crear una tabla dinámica
-    pv = pd.pivot_table(df, index=['Name'], columns=["Status"], values=['Quantity'], aggfunc=sum, fill_value=0)
-    trace1 = go.Bar(x=pv.index, y=pv[('Quantity', 'declinada')], name='EnProceso')
-    trace2 = go.Bar(x=pv.index, y=pv[('Quantity', 'pendiente')], name='Solitado')
-    trace3 = go.Bar(x=pv.index, y=pv[('Quantity', 'presentada')], name='PorEntregar')
-    trace4 = go.Bar(x=pv.index, y=pv[('Quantity', 'ganada')], name='Entregado')
+    pv1 = pd.pivot_table(df1, index=['nombreProducto'], columns=["nivel"], values=['cantidad'], aggfunc=sum, fill_value=0)
+    trace11 = go.Bar(x=pv1.index, y=pv1[('cantidad', 'StockSeguridad')], name='StockSeguridad')
+    trace12 = go.Bar(x=pv1.index, y=pv1[('cantidad', 'NivelStock')], name='NivelStock')
+    trace13 = go.Bar(x=pv1.index, y=pv1[('cantidad', 'StockFaltante')], name='StockFaltante')
 
+    ## Importar la data barras 2
+    df2 = pd.DataFrame(crud.consultar_estadoVentas())
+    pv2 = pd.pivot_table(df2, index=['nombreProducto'], columns=["trimestre"], values=['ventaTotal'], aggfunc=sum, fill_value=0)
+    trace21 = go.Bar(x=pv2.index, y=pv2[('ventaTotal', 'Trimestre1')], name='Trimestre1')
+    trace22 = go.Bar(x=pv2.index, y=pv2[('ventaTotal', 'Trimestre2')], name='Trimestre2')
+    trace23 = go.Bar(x=pv2.index, y=pv2[('ventaTotal', 'Trimestre3')], name='Trimestre3')
+    trace24 = go.Bar(x=pv2.index, y=pv2[('ventaTotal', 'Trimestre4')], name='Trimestre4')
 
     appDash.title = "Sistema de Inventarios GWM - Dashboard"
 
-    # Custom HTML layout
-
-    rtaHTML = render_template("DashBoard.html",title=appDash.title, usuario=usuario, infoUser=infoUser, opcMenu=opcMenu)
+    # Personalizar HTML layout
+    rtaHTML = render_template("Dashboard.html",title=appDash.title, usuario=usuario, infoUser=infoUser, opcMenu=opcMenu)
     rtaHTML = rtaHTML.replace("__app_entry__", "{%app_entry%}")
     rtaHTML = rtaHTML.replace("__config__", "{%config%}")
     rtaHTML = rtaHTML.replace("__scripts__", "{%scripts%}")
     rtaHTML = rtaHTML.replace("__renderer__", "{%renderer%}")
     html_layout = rtaHTML
-    #f= open("xxDashboard.html","w")
-    #f.write(html_layout)
-    #f.close()
-    #print("creo xxDashboard.html")
 
     appDash.index_string = html_layout
 
@@ -60,29 +67,33 @@ def dashboard_principal(tipoUsuario, usuario, infoUser, opcMenu):
             ),
             html.Table(
                 children=[
+                    # Linea 1
                     html.Tr(
                         children=[
+                            # Linea 1 Columna 1
                             html.Td(
                                 children= dcc.Graph(
-                                    id='example-graph',
-                                    config={"displayModeBar": False},
+                                    id='example-graph11',
+                                    # config={"displayModeBar": False},     #displayModeBar": False No muestra el menu de la grafica
+                                    config={"displayModeBar": True},
                                     figure={
-                                        'data': [trace1, trace2, trace3, trace4],
+                                        'data': [trace11, trace12, trace13],
                                         'layout':
-                                        go.Layout(title='Estado de Pedidos a los Proveedores', barmode='stack')
+                                        go.Layout(title='Estado del Stock de Productos', barmode='stack')
                                     },
                                 ),
                                 className="card",
                             ),
+                            # Linea 1 Columna 2
                             html.Td(
                                 children=dcc.Graph(
-                                    id="price-chart",
-                                    config={"displayModeBar": False},
+                                    id="price-chart12",
+                                    config={"displayModeBar": True},
                                     figure={
                                         "data": [
                                             {
-                                                "x": data["Date"],
-                                                "y": data["AveragePrice"],
+                                                "x": dfLinVentas["fecha"],
+                                                "y": dfLinVentas["precioTotal"],
                                                 "type": "lines",
                                                 "hovertemplate": "$%{y:.2f}"
                                                                 "<extra></extra>",
@@ -90,7 +101,7 @@ def dashboard_principal(tipoUsuario, usuario, infoUser, opcMenu):
                                         ],
                                         "layout": {
                                             "title": {
-                                                "text": "Stock de Inventario",
+                                                "text": "Historico de Ventas",
                                                 "x": 0.05,
                                                 "xanchor": "left",
                                             },
@@ -107,50 +118,133 @@ def dashboard_principal(tipoUsuario, usuario, infoUser, opcMenu):
                             ),
                         ]
                     ),
+                    # Linea 2
                     html.Tr(
                         children=[
+                            # Linea 2 Columna 1
                             html.Td(
                                 children= dcc.Graph(
-                                    id='example-graph2',
-                                    config={"displayModeBar": False},
+                                    id='example-graph21',
+                                    config={"displayModeBar": True},
                                     figure={
-                                        'data': [trace1, trace2, trace3, trace4],
+                                        'data': [trace21, trace22, trace23, trace24],
                                         'layout':
-                                        go.Layout(title='Estado de Pedidos a los Proveedores', barmode='stack')
+                                        go.Layout(title='Estado de Ventas por Trimestre', barmode='stack')
                                     },
                                 ),
                                 className="card",
                             ),
+                            # Linea 2 Columna 2
                             html.Td(
                                 children=dcc.Graph(
-                                    id="volume-chart",
-                                    config={"displayModeBar": False},
+                                    id="price-chart22",
+                                    config={"displayModeBar": True},
                                     figure={
                                         "data": [
                                             {
-                                                "x": data["Date"],
-                                                "y": data["Total Volume"],
+                                                "x": dfLinCompras["fecha"],
+                                                "y": dfLinCompras["costoTotal"],
                                                 "type": "lines",
+                                                "hovertemplate": "$%{y:.2f}"
+                                                                "<extra></extra>",
                                             },
                                         ],
                                         "layout": {
                                             "title": {
-                                                "text": "Unidades Vendidas",
+                                                "text": "Historico de Compras",
                                                 "x": 0.05,
                                                 "xanchor": "left",
                                             },
                                             "xaxis": {"fixedrange": True},
-                                            "yaxis": {"fixedrange": True},
-                                            "colorway": ["#E12D39"],
+                                            "yaxis": {
+                                                "tickprefix": "$",
+                                                "fixedrange": True,
+                                            },
+                                            "colorway": ["#17B897"],
                                         },
                                     },
                                 ),
                                 className="card",
                             ),
                         ]
-                    )
+                    ),
+                    # Linea 3
+                    html.Tr(
+                        children=[
+                            # Linea 3 Columna 1
+                            html.Td(
+                                children=[
+                                    html.P("Distribución de Ventas - Items:", style={'color': 'black', 'background-color': 'White'}),
+                                    dcc.Dropdown(
+                                        id='items_ventas', 
+                                        value='nombreProducto', 
+                                        options=[{'value': x, 'label': x} 
+                                                for x in ['nombreProducto', 'nombreUsuario']],
+                                        clearable=False,
+                                        style={'color': 'black', 'background-color': 'White'}
+                                    ),
+                                    html.P("Valores:", style={'color': 'black', 'background-color': 'White'}),
+                                    dcc.Dropdown(
+                                        id='valores_ventas', 
+                                        value='precioTotal', 
+                                        options=[{'value': x, 'label': x} 
+                                                for x in ['precioTotal', 'cantVenta']],
+                                        clearable=False,
+                                        style={'color': 'black', 'background-color': 'White'}
+                                    ),
+                                    dcc.Graph(id="pie-chart31"),
+                                ],
+                                className="card",
+                                style={'width': '600px', 'background-color': 'White'},
+                            ),
+                            # Linea 3 Columna 2
+                            html.Td(
+                                children=[
+                                    html.P("Distribución de Compras - Items:", style={'color': 'black', 'background-color': 'White'}),
+                                    dcc.Dropdown(
+                                        id='items_compras', 
+                                        value='nombreProducto', 
+                                        options=[{'value': x, 'label': x} 
+                                                for x in ['nombreProducto', 'nombreUsuario']],
+                                        clearable=False,
+                                        style={'color': 'black', 'background-color': 'White'}
+                                    ),
+                                    html.P("Valores:", style={'color': 'black', 'background-color': 'White'}),
+                                    dcc.Dropdown(
+                                        id='valores_compras', 
+                                        value='costoTotal', 
+                                        options=[{'value': x, 'label': x} 
+                                                for x in ['costoTotal', 'cantCompra']],
+                                        clearable=False,
+                                        style={'color': 'black', 'background-color': 'White'}
+                                    ),
+                                    dcc.Graph(id="pie-chart32"),
+                                ],
+                                className="card",
+                                style={'width': '600px', 'background-color': 'White'},
+                            ),
+                        ]
+                    ),
                 ],
                 className="wrapper",
             ),
         ]
     )
+
+
+@appDash.callback(
+    Output("pie-chart31", "figure"), 
+    [Input("items_ventas", "value"), 
+    Input("valores_ventas", "value")])
+def generate_chart1(items_ventas, valores_ventas):
+    fig = px.pie(dfPieVentas, values=valores_ventas, names=items_ventas)
+    return fig
+
+
+@appDash.callback(
+    Output("pie-chart32", "figure"), 
+    [Input("items_compras", "value"), 
+    Input("valores_compras", "value")])
+def generate_chart2(items_compras, valores_compras):
+    fig = px.pie(dfPieCompras, values=valores_compras, names=items_compras)
+    return fig

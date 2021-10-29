@@ -1,4 +1,3 @@
-from flask import Flask
 from SistemaInventarios.modelsDB import *
 from SistemaInventarios.config import dev
 from SistemaInventarios import serverFlask

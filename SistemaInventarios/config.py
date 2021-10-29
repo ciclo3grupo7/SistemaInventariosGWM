@@ -11,7 +11,7 @@ class dev2():
     DEBUG = True
     SECRET_KEY = '1234567890123456789012345678901'
     DATABASE = {
-        'name' : 'SistemaInventarios\SI_GWM.sqlite3',
+        'name' : 'SistemaInventarios/SI_GWM.sqlite3',
         'engine' : 'peewee.SqliteDatabase'
     }
 

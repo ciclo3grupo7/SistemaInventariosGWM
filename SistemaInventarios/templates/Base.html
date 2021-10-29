@@ -8,32 +8,24 @@
     <meta name="page_type" content="np-template-header-footer-from-plugin">
     <title>{{ title }}</title>
 
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="/static/css/nicepage.css" media="screen">
+    <script src="{{ url_for('static', filename='js/utilidades.js') }}"></script>
+
     {% block estilos %}
     {% endblock %}
   
-    <!-- <script class="u-script" type="text/javascript" src="/static/js/jquery.js" defer=""></script> -->
     <script class="u-script" type="text/javascript" src="/static/js/nicepage.js" defer=""></script>
-
-
     <meta name="generator" content="Nicepage 3.26.0, nicepage.com">
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
-    <script src="{{ url_for('static', filename='js/utilidades.js') }}"></script>
-    
-    
-    
-    
-    
-    
     
     <script type="application/ld+json">{
 		"@context": "http://schema.org",
 		"@type": "Organization",
-		"name": "ProyectoInventarios-v1Jorge",
+		"name": "ProyectoInventarios",
 		"logo": "images/logoGWM-PhotoRoom.png"
 }</script>
     <meta name="theme-color" content="#ffd600">
@@ -92,17 +84,6 @@
         </p>
       </div>
     </footer>
-    <section class="u-backlink u-clearfix u-grey-80">
-      <a class="u-link" href="https://nicepage.com/html-templates" target="_blank">
-        <span>HTML Website Templates</span>
-      </a>
-      <p class="u-text">
-        <span>created with</span>
-      </p>
-      <a class="u-link" href="https://nicepage.com/html-website-builder" target="_blank">
-        <span>HTML Builder</span>
-      </a>. 
-    </section>
     {% block eliminar %}
     {% endblock %}
 
@@ -344,7 +325,12 @@
     margin-top: -40px;
     margin-left: 0;
   }
-  }</style>
+  }
+  
+  </style>
+
+{% block estilosModal %}
+{% endblock %}
   
     </body>
 </html>

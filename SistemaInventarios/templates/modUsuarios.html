@@ -1,7 +1,7 @@
 {% with r = infoUsuario %}
 <form action="/modificarUsuarios" method="POST" class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form-1" style="padding: 10px;" redirect="true">
     <input type="hidden" id="idUsuario" name="idUsuario" value="{{r.idUsuario}}" >
-    <div class="u-form-group u-form-name">
+    <div class="u-form-group u-form-group-2">
       <label for="name-0f37" class="u-label">Cedula</label>
       <input type="text" placeholder="Introduzca su cedula" id="name-0f37" name="cedula" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="" value="{{r.cedula}}">
     </div>
@@ -44,7 +44,7 @@
     </div>
     <div class="u-form-group u-form-group-7">
       <label for="clave-65e8" class="u-label">Contraseña</label>
-      <input type="password" placeholder="Contraseña" id="clave-65e8" name="clave" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.clave}}">
+      <input type="password" placeholder="Contraseña" id="clave-65e8" name="clave" autocomplete="" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" value="{{r.clave}}">
     </div>
     <div class="u-form-checkbox u-form-group u-form-group-8">
       <input type="checkbox" id="checkbox-1c85" name="cambiarClave" {{r.cambiarClaveChk}}>
